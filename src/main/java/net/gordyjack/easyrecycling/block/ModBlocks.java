@@ -10,13 +10,19 @@ import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ModBlocks {
+    public static final List<Block> BLOCKS = new ArrayList<>();
     public static final Block RECYCLING_TABLE = registerBlock("recycling_table",
-            new RecyclingBlock(FabricBlockSettings.copyOf(Blocks.CRAFTING_TABLE)), ItemGroups.FUNCTIONAL);
+            new RecyclingBlock(FabricBlockSettings.copyOf(Blocks.CRAFTING_TABLE).requiresTool()), ItemGroups.FUNCTIONAL);
 
     private static Block registerBlock(String name, Block block, ItemGroup group) {
+        Block returnBlock = Registry.register(Registries.BLOCK, EasyRecycling.getID(name), block);
+        BLOCKS.add(returnBlock);
         registerBlockItem(name, block, group);
-        return Registry.register(Registries.BLOCK, EasyRecycling.getID(name), block);
+        return returnBlock;
     }
     private static Item registerBlockItem(String name, Block block, ItemGroup... itemGroups) {
         Item item = Registry.register(Registries.ITEM, EasyRecycling.getID(name),

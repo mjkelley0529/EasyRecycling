@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:anvil"
+    },
+    "G": {
+      "item": "minecraft:grindstone"
+    },
+    "P": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "pattern": [
+    " G ",
+    "PAP",
+    "PPP"
+  ],
+  "result": {
+    "item": "easyrecycling:recycling_table"
+  },
+  "show_notification": true
+}
