@@ -3,6 +3,7 @@ package net.gordyjack.easyrecycling.data.lang;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.gordyjack.easyrecycling.block.ModBlocks;
+import net.gordyjack.easyrecycling.block.RecyclingTableBlock;
 import net.gordyjack.easyrecycling.item.ModItems;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -23,6 +24,7 @@ public class ENUSLangProvider extends FabricLanguageProvider {
         for (Item item : ModItems.ITEMS) {
             translationBuilder.add(item, getTranslatedName(item));
         }
+        translationBuilder.add(RecyclingTableBlock.TITLE_KEY, getTranslatedName(RecyclingTableBlock.TITLE_KEY));
 
         try {
             Path existingFilePath = dataOutput.getModContainer().findPath("assets/easyrecycling/lang/en_us.existing.json").get();
@@ -32,10 +34,12 @@ public class ENUSLangProvider extends FabricLanguageProvider {
         }
     }
     private String getTranslatedName(ItemConvertible itemConvertible) {
-        String returnString = itemConvertible.asItem().getTranslationKey().toString();
-        returnString = returnString.substring(returnString.lastIndexOf('.') + 1);
-        returnString = returnString.replace('_', ' ');
-        returnString = WordUtils.capitalizeFully(returnString);
-        return returnString;
+        return getTranslatedName(itemConvertible.asItem().getTranslationKey().toString());
+    }
+    private String getTranslatedName(String name) {
+        name = name.substring(name.lastIndexOf('.') + 1);
+        name = name.replace('_', ' ');
+        name = WordUtils.capitalizeFully(name);
+        return name;
     }
 }

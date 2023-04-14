@@ -16,7 +16,7 @@ import java.util.List;
 public class ModBlocks {
     public static final List<Block> BLOCKS = new ArrayList<>();
     public static final Block RECYCLING_TABLE = registerBlock("recycling_table",
-            new RecyclingBlock(FabricBlockSettings.copyOf(Blocks.CRAFTING_TABLE).requiresTool()), ItemGroups.FUNCTIONAL);
+            new RecyclingTableBlock(FabricBlockSettings.copyOf(Blocks.CRAFTING_TABLE).requiresTool()), ItemGroups.FUNCTIONAL);
 
     private static Block registerBlock(String name, Block block, ItemGroup group) {
         Block returnBlock = Registry.register(Registries.BLOCK, EasyRecycling.getID(name), block);
