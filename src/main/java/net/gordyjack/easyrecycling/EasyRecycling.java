@@ -4,6 +4,7 @@ import net.fabricmc.api.ModInitializer;
 
 import net.gordyjack.easyrecycling.block.ModBlocks;
 import net.gordyjack.easyrecycling.item.ModItems;
+import net.gordyjack.easyrecycling.screen.ModScreenHandlerType;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -21,6 +22,8 @@ public class EasyRecycling implements ModInitializer {
 	public void onInitialize() {
 		ModBlocks.registerBlocks();
 		ModItems.registerItems();
+
+		ModScreenHandlerType.registerScreenHandlerTypes();
 	}
 
 	public static void logDebug(String string, Object... objects) {

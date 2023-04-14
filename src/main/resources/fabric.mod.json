@@ -18,6 +18,9 @@
 		"main": [
 			"net.gordyjack.easyrecycling.EasyRecycling"
 		],
+		"client": [
+			"net.gordyjack.easyrecycling.EasyRecyclingClient"
+		],
 		"fabric-datagen": [
 			"net.gordyjack.easyrecycling.EasyRecyclingDataGenerator"
 		]
