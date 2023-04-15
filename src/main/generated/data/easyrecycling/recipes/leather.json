@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": {
+      "item": "easyrecycling:leather_strip"
+    }
+  },
+  "pattern": [
+    "S S",
+    " S ",
+    "SSS"
+  ],
+  "result": {
+    "item": "minecraft:leather"
+  },
+  "show_notification": true
+}

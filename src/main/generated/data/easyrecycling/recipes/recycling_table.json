@@ -5,17 +5,17 @@
     "A": {
       "item": "minecraft:anvil"
     },
+    "D": {
+      "item": "minecraft:deepslate_bricks"
+    },
     "G": {
       "item": "minecraft:grindstone"
-    },
-    "P": {
-      "tag": "minecraft:planks"
     }
   },
   "pattern": [
     " G ",
-    "PAP",
-    "PPP"
+    "DAD",
+    "DDD"
   ],
   "result": {
     "item": "easyrecycling:recycling_table"

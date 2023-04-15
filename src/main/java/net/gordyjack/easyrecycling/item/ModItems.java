@@ -19,6 +19,8 @@ public class ModItems {
     public static final Item STONE_NUGGET = registerItem("pebble", new Item(new FabricItemSettings()), ItemGroups.INGREDIENTS);
     public static final Item DIAMOND_NUGGET = registerItem("diamond_nugget", new Item(new FabricItemSettings()), ItemGroups.INGREDIENTS);
     public static final Item NETHERITE_NUGGET = registerItem("netherite_nugget", new Item(new FabricItemSettings()), ItemGroups.INGREDIENTS);
+    public static final Item LEATHER_STRIP = registerItem("leather_strip", new Item(new FabricItemSettings()), ItemGroups.INGREDIENTS);
+    public static final Item SCUTE_SHARD = registerItem("scute_shard", new Item(new FabricItemSettings()), ItemGroups.INGREDIENTS);
 
     //Private Methods
     private static void addToItemGroup(ItemGroup group, Item item) {

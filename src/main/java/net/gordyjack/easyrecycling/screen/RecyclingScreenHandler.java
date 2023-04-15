@@ -1,6 +1,7 @@
 package net.gordyjack.easyrecycling.screen;
 
 import net.gordyjack.easyrecycling.EasyRecycling;
+import net.gordyjack.easyrecycling.item.ModItems;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingResultInventory;
@@ -199,14 +200,16 @@ public class RecyclingScreenHandler extends ScreenHandler {
 
         EasyRecycling.logError(inputItem.getTranslationKey().toString() + wood + stone + iron + gold + diamond + netherite + leather);
 
-        int count=0;
+        int count = 0;
+        int divisor = 1;
 
         if (inputItem.equals(Items.ELYTRA)) {
             count = 2;
             outputItem = Items.PHANTOM_MEMBRANE;
         } else if (inputItem.equals(Items.TURTLE_HELMET)) {
             count = 5;
-            outputItem = Items.SCUTE;
+            divisor = 4;
+            outputItem = ModItems.SCUTE_SHARD;
         } else if (is("axe", inputItem) || is("pickaxe", inputItem)) count = 3;
         else if (is("hoe", inputItem) || is("sword", inputItem)) count = 2;
         else if (is("shovel", inputItem)) count = 1;
@@ -216,14 +219,27 @@ public class RecyclingScreenHandler extends ScreenHandler {
         else if (is("boot", inputItem)) count = 4;
 
         if (wood) {
+            divisor = 2;
             outputItem = Items.STICK;
-            count *= 2;
-        } else if (stone) outputItem = Items.COBBLESTONE;
-        else if (iron) outputItem = Items.IRON_INGOT;
-        else if (gold) outputItem = Items.GOLD_INGOT;
-        else if (diamond) outputItem = Items.DIAMOND;
-        else if (netherite) outputItem = Items.NETHERITE_INGOT;
-        else if (leather) outputItem = Items.LEATHER;
+        } else if (stone) {
+            divisor = 4;
+            outputItem = Items.COBBLESTONE;
+        } else if (iron) {
+            divisor = 9;
+            outputItem = Items.IRON_INGOT;
+        } else if (gold) {
+            divisor = 9;
+            outputItem = Items.GOLD_INGOT;
+        } else if (diamond) {
+            divisor = 9;
+            outputItem = Items.DIAMOND;
+        } else if (netherite) {
+            divisor = 9;
+            outputItem = Items.NETHERITE_INGOT;
+        } else if (leather) {
+            divisor = 6;
+            outputItem = Items.LEATHER;
+        }
 
         if (outputItem.equals(Items.AIR)) {
             this.RESULT.setStack(0, ItemStack.EMPTY);
