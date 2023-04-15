@@ -4,7 +4,6 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.gordyjack.easyrecycling.EasyRecycling;
 import net.gordyjack.easyrecycling.block.ModBlocks;
-import net.gordyjack.easyrecycling.item.ModItems;
 import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.client.Models;
@@ -23,10 +22,6 @@ public class ModModelProvider extends FabricModelProvider {
     }
     @Override
     public void generateItemModels(ItemModelGenerator itemModelGenerator) {
-        EasyRecycling.logInfo("Generating Item Models");
 
-        for (Item item : ModItems.ITEMS) {
-            itemModelGenerator.register(item, Models.GENERATED);
-        }
     }
 }

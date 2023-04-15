@@ -4,7 +4,6 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.gordyjack.easyrecycling.block.ModBlocks;
 import net.gordyjack.easyrecycling.block.RecyclingTableBlock;
-import net.gordyjack.easyrecycling.item.ModItems;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;

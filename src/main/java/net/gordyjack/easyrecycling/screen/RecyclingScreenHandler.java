@@ -1,7 +1,5 @@
 package net.gordyjack.easyrecycling.screen;
 
-import net.gordyjack.easyrecycling.EasyRecycling;
-import net.gordyjack.easyrecycling.item.ModItems;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingResultInventory;
@@ -30,6 +28,13 @@ public class RecyclingScreenHandler extends ScreenHandler {
     private final ScreenHandlerContext CONTEXT;
     private final PlayerEntity PLAYER;
     private final List<Item> LEGALITEMS = new ArrayList<>();
+
+    private final int INPUT_SLOT = 0;
+    private final int OUTPUT_SLOT = 1;
+    private final int PLAYER_INVENTORY_START = 2;
+    private final int HOTBAR_START = PLAYER_INVENTORY_START + 27;
+    private final int PLAYER_INVENTORY_END = HOTBAR_START - 1;
+    private final int HOTBAR_END = HOTBAR_START + 9;
 
     //Constructors
     public RecyclingScreenHandler(int syncId, PlayerInventory playerInventory) {
@@ -111,12 +116,11 @@ public class RecyclingScreenHandler extends ScreenHandler {
                 return LEGALITEMS.contains(stack.getItem());
             }
         });
-        this.addSlot(new Slot(RESULT, 1, 129, 34){
+        this.addSlot(new Slot(RESULT, 0, 129, 34) {
             @Override
             public boolean canInsert(ItemStack stack) {
                 return false;
             }
-
             @Override
             public void onTakeItem(PlayerEntity player, ItemStack stack) {
                 RecyclingScreenHandler.this.INPUT.setStack(0, ItemStack.EMPTY);
@@ -157,20 +161,22 @@ public class RecyclingScreenHandler extends ScreenHandler {
             ItemStack itemStack2 = slot2.getStack();
             itemStack = itemStack2.copy();
             ItemStack itemStack3 = this.INPUT.getStack(0);
-            if (slot == 2) {
-                if (!this.insertItem(itemStack2, 2, 38, true)) {
+
+            if (slot == OUTPUT_SLOT) {
+                if (!this.insertItem(itemStack2, PLAYER_INVENTORY_START, HOTBAR_END, true)) {
                     return ItemStack.EMPTY;
                 }
                 slot2.onQuickTransfer(itemStack2, itemStack);
-            } else if (slot == 0 || slot == 1 ?
-                    !this.insertItem(itemStack2, 2, 38, false) :
-                    (itemStack3.isEmpty() ?
-                            !this.insertItem(itemStack2, 0, 1, false) :
-                            (slot >= 3 && slot < 30 ?
-                                    !this.insertItem(itemStack2, 30, 38, false) :
-                                    slot >= 30 && slot < 38 && !this.insertItem(itemStack2, 2, 29, false)))) {
+            } else if (slot == INPUT_SLOT && !this.insertItem(itemStack2, PLAYER_INVENTORY_START, HOTBAR_END, false)) {
+                return ItemStack.EMPTY;
+            } else if (itemStack3.isEmpty() && !this.insertItem(itemStack2, INPUT_SLOT, INPUT_SLOT, false)) {
+                return ItemStack.EMPTY;
+            } else if (slot >= PLAYER_INVENTORY_START && slot < HOTBAR_START && !this.insertItem(itemStack2, HOTBAR_START, HOTBAR_END, false)) {
+                return ItemStack.EMPTY;
+            } else if (slot >= HOTBAR_START && slot < HOTBAR_END && !this.insertItem(itemStack2, PLAYER_INVENTORY_START, PLAYER_INVENTORY_END, false)) {
                 return ItemStack.EMPTY;
             }
+
             if (itemStack2.isEmpty()) {
                 slot2.setStack(ItemStack.EMPTY);
             } else {
@@ -190,64 +196,58 @@ public class RecyclingScreenHandler extends ScreenHandler {
         Item inputItem = input.getItem();
         Item outputItem = Items.AIR;
 
-        boolean wood = is("wood", inputItem);
-        boolean stone = is("stone", inputItem);
-        boolean iron = is("iron", inputItem);
-        boolean gold = is("gold", inputItem);
-        boolean diamond = is("diamond", inputItem);
-        boolean netherite = is("netherite", inputItem);
-        boolean leather = is("leather", inputItem);
+        if (!input.equals(ItemStack.EMPTY)) {
 
-        EasyRecycling.logError(inputItem.getTranslationKey().toString() + wood + stone + iron + gold + diamond + netherite + leather);
+            boolean wood = is("wood", inputItem);
+            boolean stone = is("stone", inputItem);
+            boolean iron = is("iron", inputItem);
+            boolean gold = is("gold", inputItem);
+            boolean diamond = is("diamond", inputItem);
+            boolean netherite = is("netherite", inputItem);
+            boolean leather = is("leather", inputItem);
 
-        int count = 0;
-        int divisor = 1;
+            int itemCount = 0;
 
-        if (inputItem.equals(Items.ELYTRA)) {
-            count = 2;
-            outputItem = Items.PHANTOM_MEMBRANE;
-        } else if (inputItem.equals(Items.TURTLE_HELMET)) {
-            count = 5;
-            divisor = 4;
-            outputItem = ModItems.SCUTE_SHARD;
-        } else if (is("axe", inputItem) || is("pickaxe", inputItem)) count = 3;
-        else if (is("hoe", inputItem) || is("sword", inputItem)) count = 2;
-        else if (is("shovel", inputItem)) count = 1;
-        else if (is("helmet", inputItem)) count = 5;
-        else if (is("chestplate", inputItem)) count = 8;
-        else if (is("legging", inputItem)) count = 7;
-        else if (is("boot", inputItem)) count = 4;
+            if (inputItem.equals(Items.ELYTRA)) {
+                itemCount = 2;
+                outputItem = Items.PHANTOM_MEMBRANE;
+            } else if (inputItem.equals(Items.TURTLE_HELMET)) {
+                itemCount = 5;
+                outputItem = Items.SCUTE;
+            } else if (is("axe", inputItem) || is("pickaxe", inputItem)) itemCount = 3;
+            else if (is("hoe", inputItem) || is("sword", inputItem)) itemCount = 2;
+            else if (is("shovel", inputItem)) itemCount = 1;
+            else if (is("helmet", inputItem)) itemCount = 5;
+            else if (is("chestplate", inputItem)) itemCount = 8;
+            else if (is("legging", inputItem)) itemCount = 7;
+            else if (is("boot", inputItem)) itemCount = 4;
 
-        if (wood) {
-            divisor = 2;
-            outputItem = Items.STICK;
-        } else if (stone) {
-            divisor = 4;
-            outputItem = Items.COBBLESTONE;
-        } else if (iron) {
-            divisor = 9;
-            outputItem = Items.IRON_INGOT;
-        } else if (gold) {
-            divisor = 9;
-            outputItem = Items.GOLD_INGOT;
-        } else if (diamond) {
-            divisor = 9;
-            outputItem = Items.DIAMOND;
-        } else if (netherite) {
-            divisor = 9;
-            outputItem = Items.NETHERITE_INGOT;
-        } else if (leather) {
-            divisor = 6;
-            outputItem = Items.LEATHER;
-        }
+            if (wood) {
+                itemCount *= 2;
+                outputItem = Items.STICK;
+            } else if (stone) {
+                outputItem = Items.COBBLESTONE;
+            } else if (iron) {
+                outputItem = Items.IRON_INGOT;
+            } else if (gold) {
+                outputItem = Items.GOLD_INGOT;
+            } else if (diamond) {
+                outputItem = Items.DIAMOND;
+            } else if (netherite) {
+                itemCount = 1;
+                outputItem = Items.NETHERITE_INGOT;
+            } else if (leather) {
+                outputItem = Items.LEATHER;
+            }
+            itemCount *= (double) (input.getMaxDamage() - input.getDamage()) / input.getMaxDamage();
 
-        if (outputItem.equals(Items.AIR)) {
-            this.RESULT.setStack(0, ItemStack.EMPTY);
+            this.RESULT.setStack(0, itemCount > 0 ? new ItemStack(outputItem, itemCount) : ItemStack.EMPTY);
         } else {
-            this.RESULT.setStack(0, new ItemStack(outputItem, count));
+            this.RESULT.setStack(0, ItemStack.EMPTY);
         }
+        this.sendContentUpdates();
     }
     private boolean is (String type, Item item) {
-        return item.getTranslationKey().toString().contains(type);
+        return item.getTranslationKey().contains(type);
     }
 }
