@@ -1,9 +1,4 @@
-// 1.19.4	2023-04-14T21:38:25.154731	EasyRecycling/Model Definitions
-93a647b2b090def2c096b9f137d11f18bfb0d62f assets\easyrecycling\models\item\netherite_nugget.json
-7ed9fe34ff3469e11851a57f0ea1c37fd988a984 assets\easyrecycling\models\block\recycling_table.json
+// 1.19.4	2023-04-15T12:36:34.1042524	EasyRecycling/Model Definitions
 d22beabd974ea6d0a732ddfdca8ebdf17e22254f assets\easyrecycling\models\item\recycling_table.json
-5348d24ae8e4c798dfb83743a234e996019d9f5a assets\easyrecycling\models\item\leather_strip.json
-b03c941c0b3cf2171ec0b4bbf9c7ff06e0958aa4 assets\easyrecycling\models\item\scute_shard.json
+7ed9fe34ff3469e11851a57f0ea1c37fd988a984 assets\easyrecycling\models\block\recycling_table.json
 50612103a3aa5e955b1aa0a35e60e09efe5183f8 assets\easyrecycling\blockstates\recycling_table.json
-5a0d31a2ea4473368bc451f7b3a44d2ef3e92cf3 assets\easyrecycling\models\item\diamond_nugget.json
-9df0a39c5e5c582deb60d7e3463c3b82cd798850 assets\easyrecycling\models\item\pebble.json

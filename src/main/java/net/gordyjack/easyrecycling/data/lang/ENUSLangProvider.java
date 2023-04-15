@@ -5,7 +5,6 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.gordyjack.easyrecycling.block.ModBlocks;
 import net.gordyjack.easyrecycling.block.RecyclingTableBlock;
 import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -20,9 +19,6 @@ public class ENUSLangProvider extends FabricLanguageProvider {
         for (Block block : ModBlocks.BLOCKS) {
             translationBuilder.add(block, getTranslatedName(block));
         }
-        for (Item item : ModItems.ITEMS) {
-            translationBuilder.add(item, getTranslatedName(item));
-        }
         translationBuilder.add(RecyclingTableBlock.TITLE_KEY, getTranslatedName(RecyclingTableBlock.TITLE_KEY));
 
         try {
@@ -33,7 +29,7 @@ public class ENUSLangProvider extends FabricLanguageProvider {
         }
     }
     private String getTranslatedName(ItemConvertible itemConvertible) {
-        return getTranslatedName(itemConvertible.asItem().getTranslationKey().toString());
+        return getTranslatedName(itemConvertible.asItem().getTranslationKey());
     }
     private String getTranslatedName(String name) {
         name = name.substring(name.lastIndexOf('.') + 1);

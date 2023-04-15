@@ -1,9 +1,4 @@
 {
   "block.easyrecycling.recycling_table": "Recycling Table",
-  "container.easyrecycling.recycling_table": "Recycling Table",
-  "item.easyrecycling.diamond_nugget": "Diamond Nugget",
-  "item.easyrecycling.leather_strip": "Leather Strip",
-  "item.easyrecycling.netherite_nugget": "Netherite Nugget",
-  "item.easyrecycling.pebble": "Pebble",
-  "item.easyrecycling.scute_shard": "Scute Shard"
+  "container.easyrecycling.recycling_table": "Recycling Table"
 }
