@@ -1,6 +1,6 @@
 package net.gordyjack.easyrecycling.screen;
 
-import net.gordyjack.easyrecycling.item.ModItems;
+import net.gordyjack.easyrecycling.EasyRecycling;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingResultInventory;
@@ -9,18 +9,15 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.GrindstoneScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
-import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RecyclingScreenHandler extends ScreenHandler {
+    //Fields
     private final Inventory INPUT = new SimpleInventory(1) {
         @Override
         public void markDirty() {
@@ -31,96 +28,86 @@ public class RecyclingScreenHandler extends ScreenHandler {
     private final Inventory RESULT = new CraftingResultInventory();
     private final ScreenHandlerContext CONTEXT;
     private final PlayerEntity PLAYER;
-    private final List<Item> AXES = new ArrayList<>();
-    private final List<Item> HOES = new ArrayList<>();
-    private final List<Item> PICKAXES = new ArrayList<>();
-    private final List<Item> SHOVELS = new ArrayList<>();
-    private final List<Item> SWORDS = new ArrayList<>();
-    private final List<Item> HELMETS = new ArrayList<>();
-    private final List<Item> CHESTPLATES = new ArrayList<>();
-    private final List<Item> PANTS = new ArrayList<>();
-    private final List<Item> BOOTS = new ArrayList<>();
+    private final List<Item> LEGALITEMS = new ArrayList<>();
 
+    //Constructors
     public RecyclingScreenHandler(int syncId, PlayerInventory playerInventory) {
         this(syncId, playerInventory, ScreenHandlerContext.EMPTY);
     }
-
     public RecyclingScreenHandler(int syncId, PlayerInventory playerInventory, final ScreenHandlerContext context) {
         super(ModScreenHandlerType.RECYCLING_TABLE, syncId);
         this.CONTEXT = context;
         this.PLAYER = playerInventory.player;
 
-        AXES.add(Items.WOODEN_AXE);
-        AXES.add(Items.STONE_AXE);
-        AXES.add(Items.IRON_AXE);
-        AXES.add(Items.GOLDEN_AXE);
-        AXES.add(Items.DIAMOND_AXE);
-        AXES.add(Items.NETHERITE_AXE);
+        LEGALITEMS.add(Items.WOODEN_AXE);
+        LEGALITEMS.add(Items.STONE_AXE);
+        LEGALITEMS.add(Items.IRON_AXE);
+        LEGALITEMS.add(Items.GOLDEN_AXE);
+        LEGALITEMS.add(Items.DIAMOND_AXE);
+        LEGALITEMS.add(Items.NETHERITE_AXE);
 
-        HOES.add(Items.WOODEN_HOE);
-        HOES.add(Items.STONE_HOE);
-        HOES.add(Items.IRON_HOE);
-        HOES.add(Items.GOLDEN_HOE);
-        HOES.add(Items.DIAMOND_HOE);
-        HOES.add(Items.NETHERITE_HOE);
+        LEGALITEMS.add(Items.WOODEN_HOE);
+        LEGALITEMS.add(Items.STONE_HOE);
+        LEGALITEMS.add(Items.IRON_HOE);
+        LEGALITEMS.add(Items.GOLDEN_HOE);
+        LEGALITEMS.add(Items.DIAMOND_HOE);
+        LEGALITEMS.add(Items.NETHERITE_HOE);
 
-        PICKAXES.add(Items.WOODEN_PICKAXE);
-        PICKAXES.add(Items.STONE_PICKAXE);
-        PICKAXES.add(Items.IRON_PICKAXE);
-        PICKAXES.add(Items.GOLDEN_PICKAXE);
-        PICKAXES.add(Items.DIAMOND_PICKAXE);
-        PICKAXES.add(Items.NETHERITE_PICKAXE);
+        LEGALITEMS.add(Items.WOODEN_PICKAXE);
+        LEGALITEMS.add(Items.STONE_PICKAXE);
+        LEGALITEMS.add(Items.IRON_PICKAXE);
+        LEGALITEMS.add(Items.GOLDEN_PICKAXE);
+        LEGALITEMS.add(Items.DIAMOND_PICKAXE);
+        LEGALITEMS.add(Items.NETHERITE_PICKAXE);
 
-        SHOVELS.add(Items.WOODEN_SHOVEL);
-        SHOVELS.add(Items.STONE_SHOVEL);
-        SHOVELS.add(Items.IRON_SHOVEL);
-        SHOVELS.add(Items.GOLDEN_SHOVEL);
-        SHOVELS.add(Items.DIAMOND_SHOVEL);
-        SHOVELS.add(Items.NETHERITE_SHOVEL);
+        LEGALITEMS.add(Items.WOODEN_SHOVEL);
+        LEGALITEMS.add(Items.STONE_SHOVEL);
+        LEGALITEMS.add(Items.IRON_SHOVEL);
+        LEGALITEMS.add(Items.GOLDEN_SHOVEL);
+        LEGALITEMS.add(Items.DIAMOND_SHOVEL);
+        LEGALITEMS.add(Items.NETHERITE_SHOVEL);
 
-        SWORDS.add(Items.WOODEN_SWORD);
-        SWORDS.add(Items.STONE_SWORD);
-        SWORDS.add(Items.IRON_SWORD);
-        SWORDS.add(Items.GOLDEN_SWORD);
-        SWORDS.add(Items.DIAMOND_SWORD);
-        SWORDS.add(Items.IRON_SWORD);
+        LEGALITEMS.add(Items.WOODEN_SWORD);
+        LEGALITEMS.add(Items.STONE_SWORD);
+        LEGALITEMS.add(Items.IRON_SWORD);
+        LEGALITEMS.add(Items.GOLDEN_SWORD);
+        LEGALITEMS.add(Items.DIAMOND_SWORD);
+        LEGALITEMS.add(Items.NETHERITE_SWORD);
 
-        HELMETS.add(Items.LEATHER_HELMET);
-        HELMETS.add(Items.CHAINMAIL_HELMET);
-        HELMETS.add(Items.IRON_HELMET);
-        HELMETS.add(Items.GOLDEN_HELMET);
-        HELMETS.add(Items.DIAMOND_HELMET);
-        HELMETS.add(Items.NETHERITE_HELMET);
-        HELMETS.add(Items.TURTLE_HELMET);
+        LEGALITEMS.add(Items.LEATHER_HELMET);
+        LEGALITEMS.add(Items.CHAINMAIL_HELMET);
+        LEGALITEMS.add(Items.IRON_HELMET);
+        LEGALITEMS.add(Items.GOLDEN_HELMET);
+        LEGALITEMS.add(Items.DIAMOND_HELMET);
+        LEGALITEMS.add(Items.NETHERITE_HELMET);
+        LEGALITEMS.add(Items.TURTLE_HELMET);
 
-        CHESTPLATES.add(Items.LEATHER_CHESTPLATE);
-        CHESTPLATES.add(Items.CHAINMAIL_CHESTPLATE);
-        CHESTPLATES.add(Items.IRON_CHESTPLATE);
-        CHESTPLATES.add(Items.GOLDEN_CHESTPLATE);
-        CHESTPLATES.add(Items.DIAMOND_CHESTPLATE);
-        CHESTPLATES.add(Items.NETHERITE_CHESTPLATE);
-        CHESTPLATES.add(Items.ELYTRA);
+        LEGALITEMS.add(Items.LEATHER_CHESTPLATE);
+        LEGALITEMS.add(Items.CHAINMAIL_CHESTPLATE);
+        LEGALITEMS.add(Items.IRON_CHESTPLATE);
+        LEGALITEMS.add(Items.GOLDEN_CHESTPLATE);
+        LEGALITEMS.add(Items.DIAMOND_CHESTPLATE);
+        LEGALITEMS.add(Items.NETHERITE_CHESTPLATE);
+        LEGALITEMS.add(Items.ELYTRA);
 
-        PANTS.add(Items.LEATHER_LEGGINGS);
-        PANTS.add(Items.CHAINMAIL_LEGGINGS);
-        PANTS.add(Items.IRON_LEGGINGS);
-        PANTS.add(Items.GOLDEN_LEGGINGS);
-        PANTS.add(Items.DIAMOND_LEGGINGS);
-        PANTS.add(Items.NETHERITE_LEGGINGS);
+        LEGALITEMS.add(Items.LEATHER_LEGGINGS);
+        LEGALITEMS.add(Items.CHAINMAIL_LEGGINGS);
+        LEGALITEMS.add(Items.IRON_LEGGINGS);
+        LEGALITEMS.add(Items.GOLDEN_LEGGINGS);
+        LEGALITEMS.add(Items.DIAMOND_LEGGINGS);
+        LEGALITEMS.add(Items.NETHERITE_LEGGINGS);
 
-        BOOTS.add(Items.LEATHER_BOOTS);
-        BOOTS.add(Items.CHAINMAIL_BOOTS);
-        BOOTS.add(Items.IRON_BOOTS);
-        BOOTS.add(Items.GOLDEN_BOOTS);
-        BOOTS.add(Items.DIAMOND_BOOTS);
-        BOOTS.add(Items.NETHERITE_BOOTS);
+        LEGALITEMS.add(Items.LEATHER_BOOTS);
+        LEGALITEMS.add(Items.CHAINMAIL_BOOTS);
+        LEGALITEMS.add(Items.IRON_BOOTS);
+        LEGALITEMS.add(Items.GOLDEN_BOOTS);
+        LEGALITEMS.add(Items.DIAMOND_BOOTS);
+        LEGALITEMS.add(Items.NETHERITE_BOOTS);
 
         this.addSlot(new Slot(INPUT, 0, 49, 34) {
             @Override
             public boolean canInsert(ItemStack stack) {
-                Item item = stack.getItem();
-                return AXES.contains(item) || HOES.contains(item) || PICKAXES.contains(item) || SHOVELS.contains(item) || SWORDS.contains(item) ||
-                        HELMETS.contains(item) || CHESTPLATES.contains(item) || PANTS.contains(item) || BOOTS.contains(item);
+                return LEGALITEMS.contains(stack.getItem());
             }
         });
         this.addSlot(new Slot(RESULT, 1, 129, 34){
@@ -144,6 +131,16 @@ public class RecyclingScreenHandler extends ScreenHandler {
         }
     }
 
+    //Overrides
+    @Override
+    public boolean canUse(PlayerEntity player) {
+        return this.INPUT.canPlayerUse(player);
+    }
+    @Override
+    public void onClosed(PlayerEntity player) {
+        super.onClosed(player);
+        this.CONTEXT.run((world, pos) -> this.dropInventory(player, this.INPUT));
+    }
     @Override
     public void onContentChanged(Inventory inventory) {
         super.onContentChanged(inventory);
@@ -185,10 +182,8 @@ public class RecyclingScreenHandler extends ScreenHandler {
         }
         return itemStack;
     }
-    @Override
-    public boolean canUse(PlayerEntity player) {
-        return this.INPUT.canPlayerUse(player);
-    }
+
+    //TODO Change to output nugget items relative to damage values of items.
     private void updateResult() {
         ItemStack input = this.INPUT.getStack(0);
         Item inputItem = input.getItem();
@@ -202,19 +197,23 @@ public class RecyclingScreenHandler extends ScreenHandler {
         boolean netherite = is("netherite", inputItem);
         boolean leather = is("leather", inputItem);
 
+        EasyRecycling.logError(inputItem.getTranslationKey().toString() + wood + stone + iron + gold + diamond + netherite + leather);
+
         int count=0;
 
-        if (is("axe", inputItem) || is("pickaxe", inputItem)) count = 3;
+        if (inputItem.equals(Items.ELYTRA)) {
+            count = 2;
+            outputItem = Items.PHANTOM_MEMBRANE;
+        } else if (inputItem.equals(Items.TURTLE_HELMET)) {
+            count = 5;
+            outputItem = Items.SCUTE;
+        } else if (is("axe", inputItem) || is("pickaxe", inputItem)) count = 3;
         else if (is("hoe", inputItem) || is("sword", inputItem)) count = 2;
         else if (is("shovel", inputItem)) count = 1;
         else if (is("helmet", inputItem)) count = 5;
         else if (is("chestplate", inputItem)) count = 8;
         else if (is("legging", inputItem)) count = 7;
         else if (is("boot", inputItem)) count = 4;
-        else if (inputItem.equals(Items.ELYTRA)) {
-            count = 2;
-            outputItem = Items.PHANTOM_MEMBRANE;
-        }
 
         if (wood) {
             outputItem = Items.STICK;
@@ -233,6 +232,6 @@ public class RecyclingScreenHandler extends ScreenHandler {
         }
     }
     private boolean is (String type, Item item) {
-        return item.getName().contains(Text.literal(type));
+        return item.getTranslationKey().toString().contains(type);
     }
 }
