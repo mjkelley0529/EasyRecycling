@@ -1,0 +1,130 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "minecraft:block/template_anvil",
+	"textures": {
+		"particle": "block/deepslate_bricks",
+		"bricks": "block/deepslate_bricks",
+		"round": "block/grindstone_round",
+		"anvil": "block/anvil",
+		"pivot": "block/grindstone_pivot",
+		"side": "block/grindstone_side",
+		"leg": "block/dark_oak_log",
+		"top": "block/anvil_top"
+	},
+	"elements": [
+		{
+			"name": "Anvil Head",
+			"from": [5, 3, 2],
+			"to": [11, 6, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [3, 0, 13, 4], "texture": "#anvil"},
+				"east": {"uv": [0, 0, 16, 4], "texture": "#anvil"},
+				"south": {"uv": [3, 0, 13, 4], "texture": "#anvil"},
+				"west": {"uv": [0, 0, 16, 4], "texture": "#anvil"},
+				"up": {"uv": [3, 0, 13, 16], "texture": "#top"},
+				"down": {"uv": [4, 1, 12, 15], "texture": "#missing", "cullface": "down"}
+			}
+		},
+		{
+			"name": "Deepslate Base",
+			"from": [0, 0, 0],
+			"to": [16, 4, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [0, 12, 16, 16], "texture": "#bricks"},
+				"east": {"uv": [0, 12, 16, 16], "texture": "#bricks"},
+				"south": {"uv": [0, 12, 16, 16], "texture": "#bricks"},
+				"west": {"uv": [0, 12, 16, 16], "texture": "#bricks"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#bricks"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#bricks"}
+			}
+		},
+		{
+			"name": "Grindstone",
+			"from": [6, 7, 4],
+			"to": [10, 15, 12],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 8, 12], "texture": "#round"},
+				"east": {"uv": [0, 0, 12, 12], "texture": "#side"},
+				"south": {"uv": [0, 0, 8, 12], "texture": "#round"},
+				"west": {"uv": [0, 0, 12, 12], "texture": "#side"},
+				"up": {"uv": [0, 0, 8, 12], "texture": "#round", "cullface": "up"},
+				"down": {"uv": [0, 0, 8, 12], "texture": "#round"}
+			}
+		},
+		{
+			"name": "Right Leg",
+			"from": [4, 4, 7],
+			"to": [6, 9, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [12, 9, 14, 16], "texture": "#leg"},
+				"east": {"uv": [10, 16, 6, 9], "texture": "#leg"},
+				"south": {"uv": [2, 9, 4, 16], "texture": "#leg"},
+				"west": {"uv": [6, 9, 10, 16], "texture": "#leg"},
+				"up": {"uv": [2, 6, 4, 10], "texture": "#leg"},
+				"down": {"uv": [2, 6, 4, 10], "texture": "#leg", "cullface": "down"}
+			}
+		},
+		{
+			"name": "Right Pivot",
+			"from": [4, 9, 6],
+			"to": [6, 13, 10],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [6, 0, 8, 6], "texture": "#pivot"},
+				"south": {"uv": [6, 0, 8, 6], "texture": "#pivot"},
+				"west": {"uv": [0, 0, 6, 6], "texture": "#pivot"},
+				"up": {"uv": [8, 0, 10, 6], "texture": "#pivot"},
+				"down": {"uv": [8, 0, 10, 6], "texture": "#pivot"}
+			}
+		},
+		{
+			"name": "Left Leg",
+			"from": [10, 4, 7],
+			"to": [12, 9, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [12, 9, 14, 16], "texture": "#leg"},
+				"east": {"uv": [10, 16, 6, 9], "texture": "#leg"},
+				"south": {"uv": [2, 9, 4, 16], "texture": "#leg"},
+				"west": {"uv": [6, 9, 10, 16], "texture": "#leg"},
+				"up": {"uv": [2, 6, 4, 10], "texture": "#leg"},
+				"down": {"uv": [2, 6, 4, 10], "texture": "#leg", "cullface": "down"}
+			}
+		},
+		{
+			"name": "Left Pivot",
+			"from": [10, 9, 6],
+			"to": [12, 13, 10],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [6, 0, 8, 6], "texture": "#pivot"},
+				"east": {"uv": [0, 0, 6, 6], "texture": "#pivot"},
+				"south": {"uv": [6, 0, 8, 6], "texture": "#pivot"},
+				"west": {"uv": [0, 0, 6, 6], "texture": "#pivot"},
+				"up": {"uv": [8, 0, 10, 6], "texture": "#pivot"},
+				"down": {"uv": [8, 0, 10, 6], "texture": "#pivot"}
+			}
+		}
+	],
+	"groups": [
+		{
+			"name": "VoxelShapes",
+			"origin": [8, 8, 8],
+			"color": 0,
+			"children": [
+				0,
+				1,
+				{
+					"name": "Grindstone",
+					"origin": [8, 8, 8],
+					"color": 0,
+					"children": [2, 3, 4, 5, 6]
+				}
+			]
+		}
+	]
+}

@@ -14,8 +14,7 @@
   },
   "pattern": [
     " G ",
-    "DAD",
-    "DDD"
+    "DAD"
   ],
   "result": {
     "item": "easyrecycling:recycling_table"

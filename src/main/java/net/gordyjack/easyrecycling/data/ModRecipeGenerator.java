@@ -25,7 +25,6 @@ public class ModRecipeGenerator extends FabricRecipeProvider {
                 .input('D', Items.DEEPSLATE_BRICKS)
                 .pattern(" G ")
                 .pattern("DAD")
-                .pattern("DDD")
                 .criterion(FabricRecipeProvider.hasItem(Blocks.ANVIL),
                         FabricRecipeProvider.conditionsFromItem(Blocks.ANVIL))
                 .criterion(FabricRecipeProvider.hasItem(Blocks.GRINDSTONE),
