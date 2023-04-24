@@ -25,9 +25,6 @@
 			"net.gordyjack.easyrecycling.EasyRecyclingDataGenerator"
 		]
 	},
-	"mixins": [
-		"easyrecycling.mixins.json"
-	],
 	"depends": {
 		"fabricloader": ">=0.14.19",
 		"minecraft": "~1.19.4",
