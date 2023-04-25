@@ -229,7 +229,7 @@ public class RecyclingScreenHandler extends ScreenHandler {
 
             boolean wood = itemIs("wood", inputItem);
             boolean stone = itemIs("stone", inputItem);
-            boolean iron = itemIs("iron", inputItem);
+            boolean iron = itemIs("iron", inputItem) || itemIs("chainmail", inputItem);
             boolean gold = itemIs("gold", inputItem);
             boolean diamond = itemIs("diamond", inputItem);
             boolean netherite = itemIs("netherite", inputItem);
