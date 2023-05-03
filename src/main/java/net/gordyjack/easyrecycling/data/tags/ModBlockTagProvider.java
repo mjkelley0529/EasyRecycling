@@ -3,7 +3,6 @@ package net.gordyjack.easyrecycling.data.tags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.gordyjack.easyrecycling.EasyRecycling;
-import net.gordyjack.easyrecycling.block.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.TagKey;
@@ -25,8 +24,8 @@ public class ModBlockTagProvider extends FabricTagProvider.BlockTagProvider {
     //Mod Tags
     @Override
     protected void configure(RegistryWrapper.WrapperLookup arg) {
-        getOrCreateTagBuilder(MINECRAFT_MINEABLE_PICKAXE).add(ModBlocks.RECYCLING_TABLE);
-        getOrCreateTagBuilder(MINECRAFT_TOOL_STONE).add(ModBlocks.RECYCLING_TABLE);
+        getOrCreateTagBuilder(MINECRAFT_MINEABLE_PICKAXE).add(EasyRecycling.RECYCLING_TABLE_BLOCK);
+        getOrCreateTagBuilder(MINECRAFT_TOOL_STONE).add(EasyRecycling.RECYCLING_TABLE_BLOCK);
     }
 
     public TagKey<Block> registerModTagKey(String name) {

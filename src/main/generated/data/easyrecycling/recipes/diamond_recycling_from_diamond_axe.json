@@ -1,0 +1,10 @@
+{
+  "type": "easyrecycling:recycling_table",
+  "input": {
+    "item": "minecraft:diamond_axe"
+  },
+  "output": {
+    "count": 3,
+    "item": "minecraft:diamond"
+  }
+}

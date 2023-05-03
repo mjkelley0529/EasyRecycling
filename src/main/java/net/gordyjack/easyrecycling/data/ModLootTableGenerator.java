@@ -1,6 +1,6 @@
 package net.gordyjack.easyrecycling.data;
 
-import net.gordyjack.easyrecycling.block.ModBlocks;
+import net.gordyjack.easyrecycling.EasyRecycling;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 
@@ -11,6 +11,6 @@ public class ModLootTableGenerator extends FabricBlockLootTableProvider {
 
     @Override
     public void generate() {
-        addDrop(ModBlocks.RECYCLING_TABLE);
+        addDrop(EasyRecycling.RECYCLING_TABLE_BLOCK);
     }
 }

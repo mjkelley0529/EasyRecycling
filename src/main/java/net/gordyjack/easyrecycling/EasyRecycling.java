@@ -2,8 +2,24 @@ package net.gordyjack.easyrecycling;
 
 import net.fabricmc.api.ModInitializer;
 
-import net.gordyjack.easyrecycling.block.ModBlocks;
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.gordyjack.easyrecycling.block.RecyclingTableEntity;
+import net.gordyjack.easyrecycling.block.RecyclingTableBlock;
+import net.gordyjack.easyrecycling.recipe.ModRecipes;
 import net.gordyjack.easyrecycling.screen.ModScreenHandlerType;
+import net.gordyjack.easyrecycling.screen.RecyclingScreenHandler;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroups;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -15,13 +31,20 @@ public class EasyRecycling implements ModInitializer {
 	// It is considered best practice to use your mod id as the logger's name.
 	// That way, it's clear which mod wrote info, warnings, and errors.
 	public static final String  MOD_ID = "easyrecycling";
-	private static final Logger LOGGER = LoggerFactory.getLogger("easyrecycling");
+	private static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+
+	public static final Block RECYCLING_TABLE_BLOCK = Registry.register(Registries.BLOCK, getID("recycling_table"),
+			new RecyclingTableBlock(FabricBlockSettings.copyOf(Blocks.DEEPSLATE_BRICKS).requiresTool()));
+	public static final Item RECYCLING_TABLE_ITEM = Registry.register(Registries.ITEM, getID("recycling_table"),
+			new BlockItem(RECYCLING_TABLE_BLOCK, new FabricItemSettings()));
+	public static final BlockEntityType<RecyclingTableEntity> RECYCLING_TABLE_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE,
+			getID("recycling_table"), FabricBlockEntityTypeBuilder.create(RecyclingTableEntity::new, RECYCLING_TABLE_BLOCK).build(null));
 
 	@Override
 	public void onInitialize() {
-		ModBlocks.registerBlocks();
-
+		ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL).register(entries -> entries.add(RECYCLING_TABLE_ITEM));
 		ModScreenHandlerType.registerScreenHandlerTypes();
+		ModRecipes.registerRecipes();
 	}
 
 	public static void logDebug(String string, Object... objects) {

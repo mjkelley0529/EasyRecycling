@@ -2,6 +2,7 @@ package net.gordyjack.easyrecycling;
 
 import net.gordyjack.easyrecycling.data.*;
 import net.gordyjack.easyrecycling.data.lang.*;
+import net.gordyjack.easyrecycling.data.recipe.ModRecipeGenerator;
 import net.gordyjack.easyrecycling.data.tags.*;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;

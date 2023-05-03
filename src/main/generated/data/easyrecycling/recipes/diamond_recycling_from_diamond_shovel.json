@@ -1,0 +1,10 @@
+{
+  "type": "easyrecycling:recycling_table",
+  "input": {
+    "item": "minecraft:diamond_shovel"
+  },
+  "output": {
+    "count": 1,
+    "item": "minecraft:diamond"
+  }
+}

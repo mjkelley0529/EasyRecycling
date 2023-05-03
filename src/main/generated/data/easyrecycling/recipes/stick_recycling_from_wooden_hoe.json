@@ -1,0 +1,10 @@
+{
+  "type": "easyrecycling:recycling_table",
+  "input": {
+    "item": "minecraft:wooden_hoe"
+  },
+  "output": {
+    "count": 4,
+    "item": "minecraft:stick"
+  }
+}

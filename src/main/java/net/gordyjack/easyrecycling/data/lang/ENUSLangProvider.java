@@ -2,9 +2,8 @@ package net.gordyjack.easyrecycling.data.lang;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
-import net.gordyjack.easyrecycling.block.ModBlocks;
+import net.gordyjack.easyrecycling.EasyRecycling;
 import net.gordyjack.easyrecycling.block.RecyclingTableBlock;
-import net.minecraft.block.Block;
 import net.minecraft.item.ItemConvertible;
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -16,9 +15,7 @@ public class ENUSLangProvider extends FabricLanguageProvider {
     }
     @Override
     public void generateTranslations(TranslationBuilder translationBuilder) {
-        for (Block block : ModBlocks.BLOCKS) {
-            translationBuilder.add(block, getTranslatedName(block));
-        }
+        translationBuilder.add(EasyRecycling.RECYCLING_TABLE_BLOCK, getTranslatedName(EasyRecycling.RECYCLING_TABLE_BLOCK));
         translationBuilder.add(RecyclingTableBlock.TITLE_KEY, getTranslatedName(RecyclingTableBlock.TITLE_KEY));
 
         try {

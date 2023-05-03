@@ -1,0 +1,10 @@
+{
+  "type": "easyrecycling:recycling_table",
+  "input": {
+    "item": "minecraft:netherite_sword"
+  },
+  "output": {
+    "count": 1,
+    "item": "minecraft:netherite_ingot"
+  }
+}

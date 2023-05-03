@@ -1,0 +1,10 @@
+{
+  "type": "easyrecycling:recycling_table",
+  "input": {
+    "item": "minecraft:iron_pickaxe"
+  },
+  "output": {
+    "count": 3,
+    "item": "minecraft:iron_ingot"
+  }
+}

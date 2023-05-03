@@ -1,29 +1,23 @@
 package net.gordyjack.easyrecycling.screen;
 
 import net.gordyjack.easyrecycling.EasyRecycling;
-import net.minecraft.entity.ExperienceOrbEntity;
+import net.gordyjack.easyrecycling.block.RecyclingTableEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.CraftingResultInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.*;
+import net.minecraft.screen.ArrayPropertyDelegate;
+import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.intprovider.UniformIntProvider;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldEvents;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class RecyclingScreenHandler extends ScreenHandler {
     //Fields
+    /*
     private final Inventory INPUT = new SimpleInventory(1) {
         @Override
         public void markDirty() {
@@ -32,96 +26,52 @@ public class RecyclingScreenHandler extends ScreenHandler {
         }
     };
     private final Inventory RESULT = new CraftingResultInventory();
-    private final ScreenHandlerContext CONTEXT;
-    private final PlayerEntity PLAYER;
-    private final List<Item> LEGALITEMS = new ArrayList<>();
+     */
+    private static final List<Item> LEGAL_ITEMS = new ArrayList<>();
 
-    private final int INPUT_SLOT = 0;
+    private final Inventory INVENTORY;
+    private final PropertyDelegate DELEGATE;
+
+    /*private final int INPUT_SLOT = 0;
     private final int OUTPUT_SLOT = 1;
     private final int PLAYER_INVENTORY_START = OUTPUT_SLOT + 1; //2
     private final int HOTBAR_START = PLAYER_INVENTORY_START + 27; //29
     private final int PLAYER_INVENTORY_END = HOTBAR_START - 1; //28
-    private final int HOTBAR_END = HOTBAR_START + 8; //38
+    private final int HOTBAR_END = HOTBAR_START + 8; //38 */
 
     //Constructors
-    public RecyclingScreenHandler(int syncId, PlayerInventory playerInventory) {
-        this(syncId, playerInventory, ScreenHandlerContext.EMPTY);
+    public RecyclingScreenHandler(int syncId, PlayerInventory inventory) {
+        this(syncId, inventory, new SimpleInventory(RecyclingTableEntity.INVENTORY_SIZE),
+                new ArrayPropertyDelegate(RecyclingTableEntity.DELEGATE_SIZE));
     }
-    public RecyclingScreenHandler(int syncId, PlayerInventory playerInventory, final ScreenHandlerContext context) {
+    public RecyclingScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory, PropertyDelegate delegate) {
         super(ModScreenHandlerType.RECYCLING_TABLE, syncId);
-        this.CONTEXT = context;
-        this.PLAYER = playerInventory.player;
+        checkSize(inventory, RecyclingTableEntity.INVENTORY_SIZE);
+        this.INVENTORY = inventory;
+        inventory.onOpen(playerInventory.player);
+        this.DELEGATE = delegate;
 
-        LEGALITEMS.add(Items.WOODEN_AXE);
-        LEGALITEMS.add(Items.STONE_AXE);
-        LEGALITEMS.add(Items.IRON_AXE);
-        LEGALITEMS.add(Items.GOLDEN_AXE);
-        LEGALITEMS.add(Items.DIAMOND_AXE);
-        LEGALITEMS.add(Items.NETHERITE_AXE);
+        generateLegalItems();
 
-        LEGALITEMS.add(Items.WOODEN_HOE);
-        LEGALITEMS.add(Items.STONE_HOE);
-        LEGALITEMS.add(Items.IRON_HOE);
-        LEGALITEMS.add(Items.GOLDEN_HOE);
-        LEGALITEMS.add(Items.DIAMOND_HOE);
-        LEGALITEMS.add(Items.NETHERITE_HOE);
+        this.addSlot(new Slot(inventory, 0, 49, 34) {
+            @Override
+            public boolean canInsert(ItemStack stack) {
+                return LEGAL_ITEMS.contains(stack.getItem());
+            }
+        });
+        this.addSlot(new Slot(inventory, 1, 129, 34) {
+            @Override
+            public boolean canInsert(ItemStack stack) {
+                return false;
+            }
+        });
 
-        LEGALITEMS.add(Items.WOODEN_PICKAXE);
-        LEGALITEMS.add(Items.STONE_PICKAXE);
-        LEGALITEMS.add(Items.IRON_PICKAXE);
-        LEGALITEMS.add(Items.GOLDEN_PICKAXE);
-        LEGALITEMS.add(Items.DIAMOND_PICKAXE);
-        LEGALITEMS.add(Items.NETHERITE_PICKAXE);
+        addPlayerInventory(playerInventory);
+        addPlayerHotbar(playerInventory);
 
-        LEGALITEMS.add(Items.WOODEN_SHOVEL);
-        LEGALITEMS.add(Items.STONE_SHOVEL);
-        LEGALITEMS.add(Items.IRON_SHOVEL);
-        LEGALITEMS.add(Items.GOLDEN_SHOVEL);
-        LEGALITEMS.add(Items.DIAMOND_SHOVEL);
-        LEGALITEMS.add(Items.NETHERITE_SHOVEL);
+        addProperties(delegate);
 
-        LEGALITEMS.add(Items.WOODEN_SWORD);
-        LEGALITEMS.add(Items.STONE_SWORD);
-        LEGALITEMS.add(Items.IRON_SWORD);
-        LEGALITEMS.add(Items.GOLDEN_SWORD);
-        LEGALITEMS.add(Items.DIAMOND_SWORD);
-        LEGALITEMS.add(Items.NETHERITE_SWORD);
-
-        LEGALITEMS.add(Items.LEATHER_HELMET);
-        LEGALITEMS.add(Items.CHAINMAIL_HELMET);
-        LEGALITEMS.add(Items.IRON_HELMET);
-        LEGALITEMS.add(Items.GOLDEN_HELMET);
-        LEGALITEMS.add(Items.DIAMOND_HELMET);
-        LEGALITEMS.add(Items.NETHERITE_HELMET);
-        LEGALITEMS.add(Items.TURTLE_HELMET);
-
-        LEGALITEMS.add(Items.LEATHER_CHESTPLATE);
-        LEGALITEMS.add(Items.CHAINMAIL_CHESTPLATE);
-        LEGALITEMS.add(Items.IRON_CHESTPLATE);
-        LEGALITEMS.add(Items.GOLDEN_CHESTPLATE);
-        LEGALITEMS.add(Items.DIAMOND_CHESTPLATE);
-        LEGALITEMS.add(Items.NETHERITE_CHESTPLATE);
-        LEGALITEMS.add(Items.ELYTRA);
-
-        LEGALITEMS.add(Items.LEATHER_LEGGINGS);
-        LEGALITEMS.add(Items.CHAINMAIL_LEGGINGS);
-        LEGALITEMS.add(Items.IRON_LEGGINGS);
-        LEGALITEMS.add(Items.GOLDEN_LEGGINGS);
-        LEGALITEMS.add(Items.DIAMOND_LEGGINGS);
-        LEGALITEMS.add(Items.NETHERITE_LEGGINGS);
-
-        LEGALITEMS.add(Items.LEATHER_BOOTS);
-        LEGALITEMS.add(Items.CHAINMAIL_BOOTS);
-        LEGALITEMS.add(Items.IRON_BOOTS);
-        LEGALITEMS.add(Items.GOLDEN_BOOTS);
-        LEGALITEMS.add(Items.DIAMOND_BOOTS);
-        LEGALITEMS.add(Items.NETHERITE_BOOTS);
-
-        //TODO Mod Compatibility
-        if (false) {
-
-        }
-
+        /*
         this.addSlot(new Slot(INPUT, 0, 49, 34) {
             @Override
             public boolean canInsert(ItemStack stack) {
@@ -135,12 +85,6 @@ public class RecyclingScreenHandler extends ScreenHandler {
             }
             @Override
             public void onTakeItem(PlayerEntity player, ItemStack stack) {
-                Random random = new Random();
-                context.run((world, pos) -> {
-                    if (world instanceof ServerWorld) {
-                        ExperienceOrbEntity.spawn((ServerWorld)world, Vec3d.ofCenter(pos), random.nextInt(0, 5));
-                    }
-                });
                 RecyclingScreenHandler.this.INPUT.setStack(0, ItemStack.EMPTY);
             }
         });
@@ -152,27 +96,40 @@ public class RecyclingScreenHandler extends ScreenHandler {
         for (int i = 0; i < 9; ++i) {
             this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 142));
         }
+         */
     }
 
     //Overrides
     @Override
     public boolean canUse(PlayerEntity player) {
-        return this.INPUT.canPlayerUse(player);
-    }
-    @Override
-    public void onClosed(PlayerEntity player) {
-        super.onClosed(player);
-        this.CONTEXT.run((world, pos) -> this.dropInventory(player, this.INPUT));
-    }
-    @Override
-    public void onContentChanged(Inventory inventory) {
-        super.onContentChanged(inventory);
-        if (inventory == this.INPUT) {
-            this.updateResult();
-        }
+        return this.INVENTORY.canPlayerUse(player);
     }
     @Override
     public ItemStack quickMove(PlayerEntity player, int slotIndex) {
+        ItemStack newStack = ItemStack.EMPTY;
+        Slot slot = this.slots.get(slotIndex);
+        int inventorySize = this.INVENTORY.size();
+        if (slot != null && slot.hasStack()) {
+            ItemStack originalStack = slot.getStack();
+            newStack = originalStack.copy();
+            if (slotIndex < inventorySize) {
+                if (!this.insertItem(originalStack, inventorySize, this.slots.size(), true)) {
+                    return ItemStack.EMPTY;
+                }
+            } else if (!this.insertItem(originalStack, 0, inventorySize, false)) {
+                return ItemStack.EMPTY;
+            }
+
+            if (originalStack.isEmpty()) {
+                slot.setStack(ItemStack.EMPTY);
+            } else {
+                slot.markDirty();
+            }
+        }
+        return newStack;
+
+
+        /*
         //EasyRecycling.logError("quickMove");
         ItemStack itemStack = ItemStack.EMPTY;
         Slot slot = this.slots.get(slotIndex);
@@ -218,9 +175,112 @@ public class RecyclingScreenHandler extends ScreenHandler {
             slot.onTakeItem(player, itemStack2);
         }
         return itemStack;
+        */
+    }
+    private void addPlayerHotbar(PlayerInventory playerInventory) {
+        for (int i = 0; i < 9; ++i) {
+            this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 142));
+        }
+    }
+    private void addPlayerInventory(PlayerInventory playerInventory) {
+        for (int i = 0; i < 3; ++i) {
+            for (int l = 0; l < 9; ++l) {
+                this.addSlot(new Slot(playerInventory, l + i * 9 + 9, 8 + l * 18, 84 + i * 18));
+            }
+        }
+    }
+    public boolean isCrafting() {
+        return DELEGATE.get(0) > 0;
+    }
+    public static List<Item> generateLegalItems() {
+        LEGAL_ITEMS.add(Items.WOODEN_AXE);
+        LEGAL_ITEMS.add(Items.STONE_AXE);
+        LEGAL_ITEMS.add(Items.IRON_AXE);
+        LEGAL_ITEMS.add(Items.GOLDEN_AXE);
+        LEGAL_ITEMS.add(Items.DIAMOND_AXE);
+        LEGAL_ITEMS.add(Items.NETHERITE_AXE);
+
+        LEGAL_ITEMS.add(Items.WOODEN_HOE);
+        LEGAL_ITEMS.add(Items.STONE_HOE);
+        LEGAL_ITEMS.add(Items.IRON_HOE);
+        LEGAL_ITEMS.add(Items.GOLDEN_HOE);
+        LEGAL_ITEMS.add(Items.DIAMOND_HOE);
+        LEGAL_ITEMS.add(Items.NETHERITE_HOE);
+
+        LEGAL_ITEMS.add(Items.WOODEN_PICKAXE);
+        LEGAL_ITEMS.add(Items.STONE_PICKAXE);
+        LEGAL_ITEMS.add(Items.IRON_PICKAXE);
+        LEGAL_ITEMS.add(Items.GOLDEN_PICKAXE);
+        LEGAL_ITEMS.add(Items.DIAMOND_PICKAXE);
+        LEGAL_ITEMS.add(Items.NETHERITE_PICKAXE);
+
+        LEGAL_ITEMS.add(Items.WOODEN_SHOVEL);
+        LEGAL_ITEMS.add(Items.STONE_SHOVEL);
+        LEGAL_ITEMS.add(Items.IRON_SHOVEL);
+        LEGAL_ITEMS.add(Items.GOLDEN_SHOVEL);
+        LEGAL_ITEMS.add(Items.DIAMOND_SHOVEL);
+        LEGAL_ITEMS.add(Items.NETHERITE_SHOVEL);
+
+        LEGAL_ITEMS.add(Items.WOODEN_SWORD);
+        LEGAL_ITEMS.add(Items.STONE_SWORD);
+        LEGAL_ITEMS.add(Items.IRON_SWORD);
+        LEGAL_ITEMS.add(Items.GOLDEN_SWORD);
+        LEGAL_ITEMS.add(Items.DIAMOND_SWORD);
+        LEGAL_ITEMS.add(Items.NETHERITE_SWORD);
+
+        LEGAL_ITEMS.add(Items.LEATHER_HELMET);
+        LEGAL_ITEMS.add(Items.CHAINMAIL_HELMET);
+        LEGAL_ITEMS.add(Items.IRON_HELMET);
+        LEGAL_ITEMS.add(Items.GOLDEN_HELMET);
+        LEGAL_ITEMS.add(Items.DIAMOND_HELMET);
+        LEGAL_ITEMS.add(Items.NETHERITE_HELMET);
+        LEGAL_ITEMS.add(Items.TURTLE_HELMET);
+
+        LEGAL_ITEMS.add(Items.LEATHER_CHESTPLATE);
+        LEGAL_ITEMS.add(Items.CHAINMAIL_CHESTPLATE);
+        LEGAL_ITEMS.add(Items.IRON_CHESTPLATE);
+        LEGAL_ITEMS.add(Items.GOLDEN_CHESTPLATE);
+        LEGAL_ITEMS.add(Items.DIAMOND_CHESTPLATE);
+        LEGAL_ITEMS.add(Items.NETHERITE_CHESTPLATE);
+        LEGAL_ITEMS.add(Items.ELYTRA);
+
+        LEGAL_ITEMS.add(Items.LEATHER_LEGGINGS);
+        LEGAL_ITEMS.add(Items.CHAINMAIL_LEGGINGS);
+        LEGAL_ITEMS.add(Items.IRON_LEGGINGS);
+        LEGAL_ITEMS.add(Items.GOLDEN_LEGGINGS);
+        LEGAL_ITEMS.add(Items.DIAMOND_LEGGINGS);
+        LEGAL_ITEMS.add(Items.NETHERITE_LEGGINGS);
+
+        LEGAL_ITEMS.add(Items.LEATHER_BOOTS);
+        LEGAL_ITEMS.add(Items.CHAINMAIL_BOOTS);
+        LEGAL_ITEMS.add(Items.IRON_BOOTS);
+        LEGAL_ITEMS.add(Items.GOLDEN_BOOTS);
+        LEGAL_ITEMS.add(Items.DIAMOND_BOOTS);
+        LEGAL_ITEMS.add(Items.NETHERITE_BOOTS);
+
+        //TODO Mod Compatibility
+        if (false) {
+
+        }
+
+        return LEGAL_ITEMS;
+    }
+    public int getScaledFuel() {
+        int fuelTime = this.DELEGATE.get(2);
+        int maxFuelTime = this.DELEGATE.get(3);
+        int fuelIconHeight = 26;
+
+        return maxFuelTime != 0 && fuelTime != 0 ? fuelTime*fuelIconHeight/maxFuelTime : 0;
+    }
+    public int getScaledProgress() {
+        int progress = this.DELEGATE.get(0);
+        int maxProgress = this.DELEGATE.get(1);
+        int progressArrowLength = 26;
+
+        return maxProgress != 0 && progress != 0 ? progress*progressArrowLength/maxProgress : 0;
     }
 
-    private void updateResult() {
+    /*private void updateResult() {
         ItemStack input = this.INPUT.getStack(0);
         Item inputItem = input.getItem();
         Item outputItem = Items.AIR;
@@ -287,5 +347,5 @@ public class RecyclingScreenHandler extends ScreenHandler {
     }
     private boolean itemClassIs(String type, Item item) {
         return item.getClass().getCanonicalName().toLowerCase().contains(type.toLowerCase());
-    }
+    }*/
 }

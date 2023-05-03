@@ -1,0 +1,10 @@
+{
+  "type": "easyrecycling:recycling_table",
+  "input": {
+    "item": "minecraft:netherite_pickaxe"
+  },
+  "output": {
+    "count": 1,
+    "item": "minecraft:netherite_ingot"
+  }
+}

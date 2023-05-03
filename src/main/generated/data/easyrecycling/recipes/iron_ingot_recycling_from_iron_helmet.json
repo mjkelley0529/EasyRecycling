@@ -1,0 +1,10 @@
+{
+  "type": "easyrecycling:recycling_table",
+  "input": {
+    "item": "minecraft:iron_helmet"
+  },
+  "output": {
+    "count": 5,
+    "item": "minecraft:iron_ingot"
+  }
+}

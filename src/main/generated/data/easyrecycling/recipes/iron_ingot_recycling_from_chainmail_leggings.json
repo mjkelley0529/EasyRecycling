@@ -1,0 +1,10 @@
+{
+  "type": "easyrecycling:recycling_table",
+  "input": {
+    "item": "minecraft:chainmail_leggings"
+  },
+  "output": {
+    "count": 7,
+    "item": "minecraft:iron_ingot"
+  }
+}

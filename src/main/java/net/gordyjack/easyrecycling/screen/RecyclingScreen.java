@@ -39,6 +39,9 @@ public class RecyclingScreen extends HandledScreen<RecyclingScreenHandler> {
         if (this.handler.getSlot(0).hasStack() && !this.handler.getSlot(1).hasStack()) {
             drawTexture(matrices, xD2() + 92, yD2() + 31, this.backgroundWidth, 0, 28, 21);
         }
+
+        renderFuel(matrices, xD2(), yD2());
+        renderProgressArrow(matrices, xD2(), yD2());
     }
     @Override
     protected void init() {
@@ -50,5 +53,17 @@ public class RecyclingScreen extends HandledScreen<RecyclingScreenHandler> {
         renderBackground(matrices);
         super.render(matrices, mouseX, mouseY, delta);
         drawMouseoverTooltip(matrices, mouseX, mouseY);
+    }
+
+    //TODO: Change these methods and texture file to apporpriately display a progress arrow and grinding material indicator
+    private void renderFuel(MatrixStack matrices, int x, int y) {
+        if (handler.isCrafting()) {
+            drawTexture(matrices, x + 105, y + 33, 176, 0, 8, handler.getScaledFuel());
+        }
+    }
+    private void renderProgressArrow(MatrixStack matrices, int x, int y) {
+        if (handler.isCrafting()) {
+            drawTexture(matrices, x + 105, y + 33, 176, 0, 8, handler.getScaledProgress());
+        }
     }
 }

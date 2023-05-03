@@ -3,11 +3,8 @@ package net.gordyjack.easyrecycling.data;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.gordyjack.easyrecycling.EasyRecycling;
-import net.gordyjack.easyrecycling.block.ModBlocks;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.data.client.*;
-import net.minecraft.item.Item;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.Direction;
 
@@ -22,8 +19,8 @@ public class ModModelProvider extends FabricModelProvider {
 
         blockStateModelGenerator.blockStateCollector.accept(
                 VariantsBlockStateSupplier.create(
-                        ModBlocks.RECYCLING_TABLE, BlockStateVariant.create().put(
-                                VariantSettings.MODEL, ModelIds.getBlockModelId(ModBlocks.RECYCLING_TABLE)
+                        EasyRecycling.RECYCLING_TABLE_BLOCK, BlockStateVariant.create().put(
+                                VariantSettings.MODEL, ModelIds.getBlockModelId(EasyRecycling.RECYCLING_TABLE_BLOCK)
                         )
                 ).coordinate(
                         BlockStateVariantMap.create(Properties.WALL_MOUNT_LOCATION, Properties.HORIZONTAL_FACING)

@@ -1,0 +1,10 @@
+{
+  "type": "easyrecycling:recycling_table",
+  "input": {
+    "item": "minecraft:golden_shovel"
+  },
+  "output": {
+    "count": 1,
+    "item": "minecraft:gold_ingot"
+  }
+}

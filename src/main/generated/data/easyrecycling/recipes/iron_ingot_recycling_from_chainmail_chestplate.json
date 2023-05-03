@@ -1,0 +1,10 @@
+{
+  "type": "easyrecycling:recycling_table",
+  "input": {
+    "item": "minecraft:chainmail_chestplate"
+  },
+  "output": {
+    "count": 8,
+    "item": "minecraft:iron_ingot"
+  }
+}

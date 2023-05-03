@@ -1,0 +1,10 @@
+{
+  "type": "easyrecycling:recycling_table",
+  "input": {
+    "item": "minecraft:elytra"
+  },
+  "output": {
+    "count": 2,
+    "item": "minecraft:phantom_membrane"
+  }
+}
