@@ -116,8 +116,6 @@ public class RecyclingTableBlock extends BlockWithEntity implements BlockEntityP
                 Block.createCuboidShape(10, 3, 6, 12, 7, 10)
         ).reduce((v1, v2) -> VoxelShapes.combineAndSimplify(v1, v2, BooleanBiFunction.OR)).get();
     }
-    /*TODO: Placement fixed. Need to figure out why the block breaks when the block its placed on is removed.
-       Grindstone does not have this behaviour*/
     public RecyclingTableBlock(Settings settings) {
         super(settings);
         this.setDefaultState(this.stateManager.getDefaultState()
@@ -131,11 +129,7 @@ public class RecyclingTableBlock extends BlockWithEntity implements BlockEntityP
     }
     @Override
     public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
-        return this.canPlaceAt(world, pos, getDirection(state).getOpposite());
-    }
-    public static boolean canPlaceAt(WorldView world, BlockPos pos, Direction direction) {
-        BlockPos blockPos = pos.offset(direction);
-        return world.getBlockState(blockPos).isSideSolidFullSquare(world, blockPos, direction.getOpposite());
+        return true;
     }
     @Nullable
     @Override
