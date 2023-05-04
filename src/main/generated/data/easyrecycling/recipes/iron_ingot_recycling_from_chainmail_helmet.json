@@ -3,6 +3,7 @@
   "input": {
     "item": "minecraft:chainmail_helmet"
   },
+  "minimumHardness": 2,
   "output": {
     "count": 5,
     "item": "minecraft:iron_ingot"

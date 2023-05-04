@@ -3,6 +3,7 @@
   "input": {
     "item": "minecraft:diamond_chestplate"
   },
+  "minimumHardness": 3,
   "output": {
     "count": 8,
     "item": "minecraft:diamond"

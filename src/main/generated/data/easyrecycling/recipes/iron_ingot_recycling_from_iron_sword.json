@@ -3,6 +3,7 @@
   "input": {
     "item": "minecraft:iron_sword"
   },
+  "minimumHardness": 2,
   "output": {
     "count": 2,
     "item": "minecraft:iron_ingot"

@@ -3,6 +3,7 @@
   "input": {
     "item": "minecraft:diamond_axe"
   },
+  "minimumHardness": 3,
   "output": {
     "count": 3,
     "item": "minecraft:diamond"

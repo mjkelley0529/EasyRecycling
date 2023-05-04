@@ -3,6 +3,7 @@
   "input": {
     "item": "minecraft:diamond_pickaxe"
   },
+  "minimumHardness": 3,
   "output": {
     "count": 3,
     "item": "minecraft:diamond"

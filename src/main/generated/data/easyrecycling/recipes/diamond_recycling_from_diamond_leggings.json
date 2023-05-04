@@ -3,6 +3,7 @@
   "input": {
     "item": "minecraft:diamond_leggings"
   },
+  "minimumHardness": 3,
   "output": {
     "count": 7,
     "item": "minecraft:diamond"

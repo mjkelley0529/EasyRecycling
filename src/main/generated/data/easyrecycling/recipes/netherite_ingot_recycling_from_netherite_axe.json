@@ -3,6 +3,7 @@
   "input": {
     "item": "minecraft:netherite_axe"
   },
+  "minimumHardness": 4,
   "output": {
     "count": 1,
     "item": "minecraft:netherite_ingot"

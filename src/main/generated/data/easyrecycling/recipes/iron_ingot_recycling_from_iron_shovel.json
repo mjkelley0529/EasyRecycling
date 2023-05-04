@@ -3,6 +3,7 @@
   "input": {
     "item": "minecraft:iron_shovel"
   },
+  "minimumHardness": 2,
   "output": {
     "count": 1,
     "item": "minecraft:iron_ingot"

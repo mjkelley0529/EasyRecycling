@@ -3,6 +3,7 @@
   "input": {
     "item": "minecraft:diamond_boots"
   },
+  "minimumHardness": 3,
   "output": {
     "count": 4,
     "item": "minecraft:diamond"

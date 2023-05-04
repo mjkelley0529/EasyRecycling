@@ -21,6 +21,7 @@ import net.minecraft.util.collection.DefaultedList;
 
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 
 public class ModRecipeGenerator extends FabricRecipeProvider {
@@ -92,6 +93,7 @@ public class ModRecipeGenerator extends FabricRecipeProvider {
             boolean boot = itemIs("boot", item);
 
             int itemCount = 0;
+            int minHardness = 0;
 
             if (item.equals(Items.ELYTRA)) {
                 itemCount = 2;
@@ -105,24 +107,40 @@ public class ModRecipeGenerator extends FabricRecipeProvider {
             else if (boot) itemCount = 4;
 
             if (wood) {
+                minHardness = 0;
                 itemCount *= 2;
                 outputItem = Items.STICK;
-            } else if (stone) outputItem = Items.COBBLESTONE;
-            else if (leather) outputItem = Items.LEATHER;
-            else if (iron) outputItem = Items.IRON_INGOT;
-            else if (gold) outputItem = Items.GOLD_INGOT;
-            else if (diamond) outputItem = Items.DIAMOND;
-            else if (netherite) {
+            } else if (stone) {
+                minHardness = 1;
+                outputItem = Items.COBBLESTONE;
+            } else if (leather) {
+                minHardness = 0;
+                outputItem = Items.LEATHER;
+            } else if (iron) {
+                minHardness = 2;
+                outputItem = Items.IRON_INGOT;
+            } else if (gold) {
+                minHardness = 2;
+                outputItem = Items.GOLD_INGOT;
+            } else if (diamond) {
+                minHardness = 3;
+                outputItem = Items.DIAMOND;
+            } else if (netherite) {
                 itemCount = 1;
+                minHardness = 4;
                 outputItem = Items.NETHERITE_INGOT;
-            } else if (turtle) outputItem = Items.SCUTE;
+            } else if (turtle) {
+                minHardness = 2;
+                outputItem = Items.SCUTE;
+            }
 
 
-            offerRecyclingTableRecipe(exporter, outputItem, item, itemCount);
+            offerRecyclingTableRecipe(exporter, outputItem, item, itemCount, minHardness);
         }
     }
-    private void offerRecyclingTableRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible output, ItemConvertible input, int maxOutputCount) {
-        RecyclingTableRecipeJsonBuilder.create(input.asItem(), output.asItem(), maxOutputCount)
+    private void offerRecyclingTableRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible output,
+                                           ItemConvertible input, int maxOutputCount, int minHardness) {
+        RecyclingTableRecipeJsonBuilder.create(input.asItem(), output.asItem(), maxOutputCount, minHardness)
                 .offerTo(exporter, getRecipeID(input, output, "recycling"));
     }
     private static Identifier getRecipeID(ItemConvertible output) {

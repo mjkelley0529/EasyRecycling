@@ -3,6 +3,7 @@
   "input": {
     "item": "minecraft:elytra"
   },
+  "minimumHardness": 0,
   "output": {
     "count": 2,
     "item": "minecraft:phantom_membrane"

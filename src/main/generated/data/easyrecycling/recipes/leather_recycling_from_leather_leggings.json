@@ -3,6 +3,7 @@
   "input": {
     "item": "minecraft:leather_leggings"
   },
+  "minimumHardness": 0,
   "output": {
     "count": 7,
     "item": "minecraft:leather"

@@ -3,6 +3,7 @@
   "input": {
     "item": "minecraft:chainmail_chestplate"
   },
+  "minimumHardness": 2,
   "output": {
     "count": 8,
     "item": "minecraft:iron_ingot"

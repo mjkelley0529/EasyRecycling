@@ -3,6 +3,7 @@
   "input": {
     "item": "minecraft:stone_hoe"
   },
+  "minimumHardness": 1,
   "output": {
     "count": 2,
     "item": "minecraft:cobblestone"

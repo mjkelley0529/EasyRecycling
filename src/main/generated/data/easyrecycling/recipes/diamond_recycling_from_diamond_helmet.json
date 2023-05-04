@@ -3,6 +3,7 @@
   "input": {
     "item": "minecraft:diamond_helmet"
   },
+  "minimumHardness": 3,
   "output": {
     "count": 5,
     "item": "minecraft:diamond"

@@ -15,7 +15,7 @@ public class ModModelProvider extends FabricModelProvider {
 
     @Override
     public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
-        EasyRecycling.logInfo("Generating Block Models");
+        EasyRecycling.logDebug("Generating Block Models");
 
         blockStateModelGenerator.blockStateCollector.accept(
                 VariantsBlockStateSupplier.create(

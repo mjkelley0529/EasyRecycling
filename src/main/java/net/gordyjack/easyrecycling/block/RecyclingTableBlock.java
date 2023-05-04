@@ -28,6 +28,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
@@ -115,6 +116,8 @@ public class RecyclingTableBlock extends BlockWithEntity implements BlockEntityP
                 Block.createCuboidShape(10, 3, 6, 12, 7, 10)
         ).reduce((v1, v2) -> VoxelShapes.combineAndSimplify(v1, v2, BooleanBiFunction.OR)).get();
     }
+    /*TODO: Placement fixed. Need to figure out why the block breaks when the block its placed on is removed.
+       Grindstone does not have this behaviour*/
     public RecyclingTableBlock(Settings settings) {
         super(settings);
         this.setDefaultState(this.stateManager.getDefaultState()
@@ -128,12 +131,27 @@ public class RecyclingTableBlock extends BlockWithEntity implements BlockEntityP
     }
     @Override
     public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
-        return true;
+        return this.canPlaceAt(world, pos, getDirection(state).getOpposite());
+    }
+    public static boolean canPlaceAt(WorldView world, BlockPos pos, Direction direction) {
+        BlockPos blockPos = pos.offset(direction);
+        return world.getBlockState(blockPos).isSideSolidFullSquare(world, blockPos, direction.getOpposite());
     }
     @Nullable
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
         return new RecyclingTableEntity(pos, state);
+    }
+    protected static Direction getDirection(BlockState state) {
+        switch (state.get(FACE)) {
+            case CEILING: {
+                return Direction.DOWN;
+            }
+            case FLOOR: {
+                return Direction.UP;
+            }
+        }
+        return state.get(FACING);
     }
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
@@ -165,6 +183,28 @@ public class RecyclingTableBlock extends BlockWithEntity implements BlockEntityP
             }
         }
         return X_FLOOR_SHAPE;
+    }
+    @Override
+    @Nullable
+    public BlockState getPlacementState(ItemPlacementContext ctx) {
+        for (Direction direction : ctx.getPlacementDirections()) {
+            BlockState blockState = direction.getAxis() == Direction.Axis.Y ?
+                    this.getDefaultState().with(FACE, direction == Direction.UP ?
+                            WallMountLocation.CEILING :
+                            WallMountLocation.FLOOR).with(FACING, ctx.getHorizontalPlayerFacing()) :
+                    this.getDefaultState().with(FACE, WallMountLocation.WALL).with(FACING, direction.getOpposite());
+            if (!blockState.canPlaceAt(ctx.getWorld(), ctx.getBlockPos())) continue;
+            return blockState;
+        }
+        return null;
+    }
+
+    @Override
+    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
+        if (getDirection(state).getOpposite() == direction && !state.canPlaceAt(world, pos)) {
+            return Blocks.AIR.getDefaultState();
+        }
+        return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
     }
     @Override
     public BlockRenderType getRenderType(BlockState state) {

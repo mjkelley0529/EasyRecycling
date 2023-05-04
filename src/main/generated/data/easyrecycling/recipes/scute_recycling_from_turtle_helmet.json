@@ -3,6 +3,7 @@
   "input": {
     "item": "minecraft:turtle_helmet"
   },
+  "minimumHardness": 2,
   "output": {
     "count": 5,
     "item": "minecraft:scute"

@@ -3,6 +3,7 @@
   "input": {
     "item": "minecraft:wooden_axe"
   },
+  "minimumHardness": 0,
   "output": {
     "count": 6,
     "item": "minecraft:stick"

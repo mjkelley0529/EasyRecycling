@@ -15,21 +15,29 @@ public class RecyclingTableRecipeJsonBuilder {
     private final Item input;
     private final Item output;
     private final int maxOutputCount;
+    private final int minHardness;
     private final RecipeSerializer<?> serializer;
 
     public RecyclingTableRecipeJsonBuilder(RecipeSerializer<?> serializer, Item input, Item output, int maxOutputCount) {
+        this(serializer, input, output, maxOutputCount, 0);
+    }
+    public RecyclingTableRecipeJsonBuilder(RecipeSerializer<?> serializer, Item input, Item output, int maxOutputCount, int minHardness) {
         this.serializer = serializer;
         this.input = input;
         this.output = output;
         this.maxOutputCount = maxOutputCount;
+        this.minHardness = minHardness;
     }
 
     public static RecyclingTableRecipeJsonBuilder create(Item input, Item output, int maxOutputCount) {
-        return new RecyclingTableRecipeJsonBuilder(RecyclingTableRecipe.Serializer.INSTANCE, input, output, maxOutputCount);
+        return RecyclingTableRecipeJsonBuilder.create(input, output, maxOutputCount, 0);
+    }
+    public static RecyclingTableRecipeJsonBuilder create(Item input, Item output, int maxOutputCount, int minHardness) {
+        return new RecyclingTableRecipeJsonBuilder(RecyclingTableRecipe.Serializer.INSTANCE, input, output, maxOutputCount, minHardness);
     }
     public void offerTo(Consumer<RecipeJsonProvider> exporter, Identifier recipeId) {
         exporter.accept(new RecyclingTableRecipeJsonProvider(recipeId, this.serializer, this.input,
-                this.output, this.maxOutputCount));
+                this.output, this.maxOutputCount, this.minHardness));
     }
 
     public static class RecyclingTableRecipeJsonProvider
@@ -38,15 +46,17 @@ public class RecyclingTableRecipeJsonBuilder {
         private final Item input;
         private final Item output;
         private final int maxOutputCount;
+        private final int minimumHardness;
         private final RecipeSerializer<?> serializer;
 
         public RecyclingTableRecipeJsonProvider(Identifier recipeId, RecipeSerializer<?> serializer, Item input,
-                                                Item output, int maxOutputCount) {
+                                                Item output, int maxOutputCount, int minimumHardness) {
             this.recipeId = recipeId;
             this.serializer = serializer;
             this.input = input;
             this.output = output;
             this.maxOutputCount = maxOutputCount;
+            this.minimumHardness = minimumHardness;
         }
 
         @Override
@@ -59,6 +69,8 @@ public class RecyclingTableRecipeJsonBuilder {
             outputObject.addProperty("item", Registries.ITEM.getId(this.output).toString());
             outputObject.addProperty("count", maxOutputCount);
             json.add("output", outputObject);
+
+            json.addProperty("minimumHardness", this.minimumHardness);
         }
 
         @Override

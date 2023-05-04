@@ -5,6 +5,7 @@ import net.gordyjack.easyrecycling.recipe.RecyclingTableRecipe;
 import net.gordyjack.easyrecycling.screen.RecyclingScreenHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.input.Input;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
@@ -121,7 +122,6 @@ public class RecyclingTableEntity extends BlockEntity implements NamedScreenHand
     }
     @Override
     public ItemStack getStack(int slot) {
-        //TODO: this is broken. IDK why.
         return getItems().get(slot);
     }
     @Override
@@ -182,12 +182,18 @@ public class RecyclingTableEntity extends BlockEntity implements NamedScreenHand
         };
 
         if (entity.hasRecipe()) {
+            ItemStack input = entity.getStack(INPUT_SLOT_INDEX).copy();
+            ItemStack output = recipe.get().getOutput();
             entity.removeStack(INPUT_SLOT_INDEX, 1);
-            entity.setStack(OUTPUT_SLOT_1_INDEX, new ItemStack(recipe.get().getOutput().getItem(),
-                    entity.getStack(outputIndex).getCount() + recipe.get().getOutput().getCount()));
+            entity.setStack(OUTPUT_SLOT_1_INDEX, new ItemStack(output.getItem(),
+                    entity.getStack(outputIndex).getCount()
+                            + modifyOutputForDamage(input, output).getCount()));
             entity.resetProgress();
         }
     }
+    /*TODO: Add grinding material compatibility with custom tags to denote grinding materials.
+       Harder materials = faster grinding & faster decay.
+       */
     private boolean hasFuel() {
         return true;
     }
@@ -199,20 +205,21 @@ public class RecyclingTableEntity extends BlockEntity implements NamedScreenHand
         Optional<RecyclingTableRecipe> match = this.getWorld().getRecipeManager()
                 .getFirstMatch(RecyclingTableRecipe.Type.INSTANCE, simpleInventory, this.getWorld());
 
-        EasyRecycling.logError(match + " " + match.isPresent());
+        //EasyRecycling.logError(match + " " + match.isPresent());
 
         if (match.isPresent()) {
-            RecyclingTableRecipe recipe = match.get();
-            //EasyRecycling.logError(recipe.getOutput().getCount() + "  " + recipe.getOutput());
-            return canInsertIntoSlot(simpleInventory, recipe.getOutput().getItem(), recipe.getOutput().getCount(), OUTPUT_SLOT_1_INDEX);
+            ItemStack inputStack = simpleInventory.getStack(INPUT_SLOT_INDEX);
+            ItemStack outputStack = modifyOutputForDamage(inputStack, match.get().getOutput());
+            return canInsertIntoSlot(simpleInventory, outputStack, OUTPUT_SLOT_1_INDEX);
         }
         return false;
 
     }
-    private static boolean canInsertIntoSlot(SimpleInventory inventory, Item item, int count, int slotIndex) {
+    private static boolean canInsertIntoSlot(SimpleInventory inventory, ItemStack output, int slotIndex) {
         ItemStack outputStack = inventory.getStack(slotIndex);
-        return outputStack.getMaxCount() >= outputStack.getCount() + count &&
-                (outputStack.getItem() == item || outputStack.isEmpty());
+
+        return outputStack.getMaxCount() >= outputStack.getCount() + output.getCount() &&
+                (outputStack.getItem() == output.getItem() || outputStack.isEmpty());
     }
     private SimpleInventory getCloneInventory() {
         SimpleInventory simpleInventory = new SimpleInventory(this.size());
@@ -220,6 +227,10 @@ public class RecyclingTableEntity extends BlockEntity implements NamedScreenHand
             simpleInventory.setStack(i, this.getStack(i));
         }
         return simpleInventory;
+    }
+    private static ItemStack modifyOutputForDamage(ItemStack input, ItemStack output) {
+        int outputCount = (int) (output.getCount() * (double) (input.getMaxDamage() - input.getDamage()) / input.getMaxDamage());
+        return(outputCount > 0 ? new ItemStack(output.getItem(), outputCount) : ItemStack.EMPTY);
     }
 
     private int decreaseProgress() {

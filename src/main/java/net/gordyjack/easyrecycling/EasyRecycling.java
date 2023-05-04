@@ -80,8 +80,4 @@ public class EasyRecycling implements ModInitializer {
 	public static @NotNull String getKey(String namespace, String name) {
 		return namespace + "." + MOD_ID + "." + name;
 	}
-	@Contract("_ -> new")
-	public static @NotNull String getMessageKey(String name) {
-		return getKey("message", name);
-	}
 }

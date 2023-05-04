@@ -3,6 +3,7 @@
   "input": {
     "item": "minecraft:leather_chestplate"
   },
+  "minimumHardness": 0,
   "output": {
     "count": 8,
     "item": "minecraft:leather"

@@ -3,6 +3,7 @@
   "input": {
     "item": "minecraft:stone_axe"
   },
+  "minimumHardness": 1,
   "output": {
     "count": 3,
     "item": "minecraft:cobblestone"

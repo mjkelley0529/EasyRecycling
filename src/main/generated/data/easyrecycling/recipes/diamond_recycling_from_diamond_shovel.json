@@ -3,6 +3,7 @@
   "input": {
     "item": "minecraft:diamond_shovel"
   },
+  "minimumHardness": 3,
   "output": {
     "count": 1,
     "item": "minecraft:diamond"

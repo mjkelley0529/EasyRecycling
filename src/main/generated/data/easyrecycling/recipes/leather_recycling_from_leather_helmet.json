@@ -3,6 +3,7 @@
   "input": {
     "item": "minecraft:leather_helmet"
   },
+  "minimumHardness": 0,
   "output": {
     "count": 5,
     "item": "minecraft:leather"

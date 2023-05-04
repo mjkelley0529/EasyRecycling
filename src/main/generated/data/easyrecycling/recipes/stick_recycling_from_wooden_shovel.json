@@ -3,6 +3,7 @@
   "input": {
     "item": "minecraft:wooden_shovel"
   },
+  "minimumHardness": 0,
   "output": {
     "count": 2,
     "item": "minecraft:stick"

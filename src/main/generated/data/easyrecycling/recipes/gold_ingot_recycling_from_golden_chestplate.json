@@ -3,6 +3,7 @@
   "input": {
     "item": "minecraft:golden_chestplate"
   },
+  "minimumHardness": 2,
   "output": {
     "count": 8,
     "item": "minecraft:gold_ingot"

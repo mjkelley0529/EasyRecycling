@@ -19,12 +19,14 @@ public class RecyclingTableRecipe implements Recipe<SimpleInventory> {
     private final Identifier ID;
     private final ItemStack INPUT;
     private final ItemStack OUTPUT;
+    private final int MIN_HARDNESS;
 
     //Constructor
-    public RecyclingTableRecipe(Identifier id, ItemStack output, ItemStack input) {
+    public RecyclingTableRecipe(Identifier id, ItemStack output, ItemStack input, int minHardness) {
         this.ID = id;
         this.OUTPUT = output;
         this.INPUT = input;
+        this.MIN_HARDNESS = minHardness;
     }
 
     //Methods
@@ -47,17 +49,20 @@ public class RecyclingTableRecipe implements Recipe<SimpleInventory> {
     }
     @Override
     public ItemStack getOutput(DynamicRegistryManager registryManager) {
-        return null;
+        return getOutput();
     }
     @Override
     public DefaultedList<Ingredient> getIngredients() {
         return DefaultedList.ofSize(1, Ingredient.ofItems(getInput().getItem()));
     }
     public ItemStack getInput() {
-        return INPUT.copy();
+        return this.INPUT.copy();
     }
     public ItemStack getOutput() {
-        return OUTPUT.copy();
+        return this.OUTPUT.copy();
+    }
+    public int getHardness() {
+        return this.MIN_HARDNESS;
     }
     @Override
     public Identifier getId() {
@@ -92,27 +97,31 @@ public class RecyclingTableRecipe implements Recipe<SimpleInventory> {
         public RecyclingTableRecipe read(Identifier id, JsonObject json) {
             ItemStack input = ShapedRecipe.outputFromJson(JsonHelper.getObject(json, "input"));
             ItemStack output = ShapedRecipe.outputFromJson(JsonHelper.getObject(json, "output"));
+            int minHardness = JsonHelper.getInt(json, "minimumHardness");
 
-            EasyRecycling.logError("read() 1 " + input + " | " + output);
+            //EasyRecycling.logError("read() 1 " + input + " | " + output + " | " + minHardness);
 
-            return new RecyclingTableRecipe(id, output, input);
+            return new RecyclingTableRecipe(id, output, input, minHardness);
         }
         @Override
         public RecyclingTableRecipe read(Identifier id, PacketByteBuf buf) {
             ItemStack input = buf.readItemStack();
             ItemStack output = buf.readItemStack();
+            int minHardness = buf.readInt();
 
-            EasyRecycling.logError("read() 2 " + input + " | " + output);
+            //EasyRecycling.logError("read() 2 " + input + " | " + output + " | " + minHardness);
 
-            return new RecyclingTableRecipe(id, output, input);
+            return new RecyclingTableRecipe(id, output, input, minHardness);
         }
         @Override
         public void write(PacketByteBuf buf, RecyclingTableRecipe recipe) {
             ItemStack input , output;
+            int minHardness;
             buf.writeItemStack(input = recipe.getInput());
             buf.writeItemStack(output = recipe.getOutput());
+            buf.writeInt(minHardness = recipe.getHardness());
 
-            EasyRecycling.logError("write()" + input + " | " + output);
+            //EasyRecycling.logError("write()" + input + " | " + output + " | " + minHardness);
         }
     }
 }

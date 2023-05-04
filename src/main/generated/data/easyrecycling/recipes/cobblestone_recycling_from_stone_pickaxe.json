@@ -3,6 +3,7 @@
   "input": {
     "item": "minecraft:stone_pickaxe"
   },
+  "minimumHardness": 1,
   "output": {
     "count": 3,
     "item": "minecraft:cobblestone"

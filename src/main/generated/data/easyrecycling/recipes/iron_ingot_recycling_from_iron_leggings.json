@@ -3,6 +3,7 @@
   "input": {
     "item": "minecraft:iron_leggings"
   },
+  "minimumHardness": 2,
   "output": {
     "count": 7,
     "item": "minecraft:iron_ingot"
