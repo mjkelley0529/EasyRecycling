@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:bone",
+    "minecraft:flint",
+    "minecraft:glowstone_dust",
+    "minecraft:gravel",
+    "minecraft:sand",
+    {
+      "id": "#c:concrete_powder",
+      "required": false
+    }
+  ]
+}

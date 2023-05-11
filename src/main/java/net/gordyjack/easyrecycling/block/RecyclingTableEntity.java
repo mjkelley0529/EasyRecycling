@@ -1,19 +1,28 @@
 package net.gordyjack.easyrecycling.block;
 
+import com.google.common.collect.Maps;
 import net.gordyjack.easyrecycling.EasyRecycling;
+import net.gordyjack.easyrecycling.data.tags.ModItemTagProvider;
 import net.gordyjack.easyrecycling.recipe.RecyclingTableRecipe;
 import net.gordyjack.easyrecycling.screen.RecyclingScreenHandler;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.input.Input;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.recipe.AbstractCookingRecipe;
+import net.minecraft.recipe.RecipeManager;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandler;
@@ -24,22 +33,27 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class RecyclingTableEntity extends BlockEntity implements NamedScreenHandlerFactory, SidedInventory {
     public static final int DELEGATE_SIZE = 4;
-    public static final int INVENTORY_SIZE = 2;
+    public static final int INVENTORY_SIZE = 3;
     private static final int INPUT_SLOT_INDEX = 0;
-    private static final int OUTPUT_SLOT_1_INDEX = 1;
+    private static final int MATERIAL_SLOT_INDEX = 1;
+    private static final int OUTPUT_SLOT_1_INDEX = 2;
     //private static final int OUTPUT_SLOT_2_INDEX = 2;
 
     private final DefaultedList<ItemStack> INVENTORY = DefaultedList.ofSize(INVENTORY_SIZE, ItemStack.EMPTY);
     private final PropertyDelegate propertyDelegate;
-
     private int progress = 0;
     private int maxProgress = 5;
-    private int fuelTime = 0;
-    private int maxFuelTime = 0;
+    private int grindTime = 0;
+    private int maxGrindTime = 0;
+
+
+    private final RecipeManager.MatchGetter<Inventory, ? extends RecyclingTableRecipe> matchGetter;
 
     public RecyclingTableEntity(BlockPos pos, BlockState state) {
         super(EasyRecycling.RECYCLING_TABLE_ENTITY, pos, state);
@@ -49,8 +63,8 @@ public class RecyclingTableEntity extends BlockEntity implements NamedScreenHand
                 return switch (index) {
                     case 0 -> RecyclingTableEntity.this.progress;
                     case 1 -> RecyclingTableEntity.this.maxProgress;
-                    case 2 -> RecyclingTableEntity.this.fuelTime;
-                    case 3 -> RecyclingTableEntity.this.maxFuelTime;
+                    case 2 -> RecyclingTableEntity.this.grindTime;
+                    case 3 -> RecyclingTableEntity.this.maxGrindTime;
                     default -> 0;
                 };
             }
@@ -60,8 +74,8 @@ public class RecyclingTableEntity extends BlockEntity implements NamedScreenHand
                 switch (index) {
                     case 0 -> RecyclingTableEntity.this.progress = value;
                     case 1 -> RecyclingTableEntity.this.maxProgress = value;
-                    case 2 -> RecyclingTableEntity.this.fuelTime = value;
-                    case 3 -> RecyclingTableEntity.this.maxFuelTime = value;
+                    case 2 -> RecyclingTableEntity.this.grindTime = value;
+                    case 3 -> RecyclingTableEntity.this.maxGrindTime = value;
                 }
             }
 
@@ -70,6 +84,7 @@ public class RecyclingTableEntity extends BlockEntity implements NamedScreenHand
                 return DELEGATE_SIZE;
             }
         };
+        this.matchGetter = RecipeManager.createCachedMatchGetter(RecyclingTableRecipe.Type.INSTANCE);
     }
 
     @Override
@@ -155,19 +170,23 @@ public class RecyclingTableEntity extends BlockEntity implements NamedScreenHand
             return;
         }
 
-        if (entity.hasRecipe() && entity.hasFuel()) {
+        if (entity.isCrafting()) {
             entity.progress++;
+            entity.grindTime--;
             markDirty(world, blockPos, state);
             if (entity.progress >= entity.maxProgress) {
                 craftItem(entity, 1);
             }
-        } else if (entity.hasRecipe() && !entity.hasFuel()) {
+        } else if (entity.hasRecipe() && !entity.hasGrindingMaterial()) {
             entity.decreaseProgress();
             markDirty(world, blockPos, state);
         } else {
             entity.resetProgress();
             markDirty(world, blockPos, state);
         }
+    }
+    private boolean isCrafting() {
+        return this.hasRecipe() && this.hasGrindingMaterial();
     }
     private static void craftItem(RecyclingTableEntity entity, int outputSlot) {
         SimpleInventory simpleInventory = entity.getCloneInventory();
@@ -194,16 +213,62 @@ public class RecyclingTableEntity extends BlockEntity implements NamedScreenHand
     /*TODO: Add grinding material compatibility with custom tags to denote grinding materials.
        Harder materials = faster grinding & faster decay.
        */
-    private boolean hasFuel() {
+    private boolean hasGrindingMaterial() {
         return true;
     }
+    private static Map<Item, Integer> createGrindTimeMap() {
+        LinkedHashMap<Item, Integer> map = Maps.newLinkedHashMap();
+        addGrindingMaterial(map, ModItemTagProvider.SMALL_MATERIAL, 2000);
+        addGrindingMaterial(map, ModItemTagProvider.MEDIUM_MATERIAL, 10000);
+        addGrindingMaterial(map, ModItemTagProvider.LARGE_MATERIAL, 20000);
+        return map;
+    }
+    private static void addGrindingMaterial(Map<Item, Integer> grindTimes, TagKey<Item> tag, int baseGrindingTime) {
+        for (RegistryEntry<Item> registryEntry : Registries.ITEM.iterateEntries(tag)) {
+            int grindingTime = baseGrindingTime;
+            grindingTime = modifyGrindTime(registryEntry.value(), baseGrindingTime);
+            grindTimes.put(registryEntry.value(), grindingTime);
+        }
+    }
+    private static void addGrindingMaterial(Map<Item, Integer> grindTimes, ItemConvertible item, int baseGrindingTime) {
+        grindTimes.put(item.asItem(), baseGrindingTime);
+    }
+    private static boolean canUseAsGrindingMaterial(ItemStack itemStack) {
+        return createGrindTimeMap().containsKey(itemStack.getItem());
+    }
+    private static int getGrindTime(ItemStack input) {
+        if (input.isEmpty()) {
+            return 0;
+        }
+        Item item = input.getItem();
+        return createGrindTimeMap().getOrDefault(item, 0);
+    }
+    private static int modifyGrindTime(Item item, int baseGrindingTime) {
+        int grindingTime = baseGrindingTime;
+        if (itemInTag(item, ModItemTagProvider.HARDNESS_1_MATERIAL)) {
+            grindingTime *= 2;
+        } else if (itemInTag(item, ModItemTagProvider.HARDNESS_2_MATERIAL)) {
+            grindingTime *= 1;
+        } else if (itemInTag(item, ModItemTagProvider.HARDNESS_3_MATERIAL)) {
+            grindingTime *= .9;
+        } else if (itemInTag(item, ModItemTagProvider.HARDNESS_4_MATERIAL)) {
+            grindingTime *= .75;
+        }
+        return grindingTime;
+    }
+    private static boolean itemInTag(Item item, TagKey tagId) {
+        if (tagId == null) {
+            return false;
+        }
+        return item.getRegistryEntry().isIn(tagId);
+    }
+
     private boolean hasRecipe() {
         SimpleInventory simpleInventory = this.getCloneInventory();
 
         //EasyRecycling.logError(simpleInventory.toString());
 
-        Optional<RecyclingTableRecipe> match = this.getWorld().getRecipeManager()
-                .getFirstMatch(RecyclingTableRecipe.Type.INSTANCE, simpleInventory, this.getWorld());
+        Optional<? extends RecyclingTableRecipe> match = this.matchGetter.getFirstMatch(this, world);
 
         //EasyRecycling.logError(match + " " + match.isPresent());
 
@@ -242,7 +307,7 @@ public class RecyclingTableEntity extends BlockEntity implements NamedScreenHand
 
     //NBT
     private final String PROGRESS_KEY = getNbtKey("progress");
-    private final String FUEL_TIME_KEY = getNbtKey("fuelTime");
+    private final String GRIND_TIME_KEY = getNbtKey("grindTime");
     private String getNbtKey(String name) {
         return "recycling_table." + name;
     }
@@ -251,14 +316,82 @@ public class RecyclingTableEntity extends BlockEntity implements NamedScreenHand
     public void readNbt(NbtCompound nbt) {
         Inventories.readNbt(nbt, INVENTORY);
         nbt.putInt(PROGRESS_KEY, progress);
-        nbt.putInt(FUEL_TIME_KEY, fuelTime);
+        nbt.putInt(GRIND_TIME_KEY, grindTime);
         super.readNbt(nbt);
     }
     @Override
-    protected void writeNbt(NbtCompound nbt) {
+    public void writeNbt(NbtCompound nbt) {
         super.writeNbt(nbt);
         Inventories.writeNbt(nbt, INVENTORY);
         this.progress = nbt.getInt(PROGRESS_KEY);
-        this.fuelTime = nbt.getInt(FUEL_TIME_KEY);
+        this.grindTime = nbt.getInt(GRIND_TIME_KEY);
     }
+
+    /*
+    public void test(World world, BlockPos pos, BlockState state, RecyclingTableEntity blockEntity) {
+        boolean isBurningBeforeTick = blockEntity.isBurning();
+        boolean shouldUpdateBlockState = false;
+        if (isBurningBeforeTick) {
+            --blockEntity.burnTime;
+        }
+
+        ItemStack fuelStack = blockEntity.inventory.get(1);
+        boolean hasInputItem = !blockEntity.inventory.get(0).isEmpty();
+        boolean hasFuel = !fuelStack.isEmpty();
+
+        if (isBurningBeforeTick || (hasFuel && hasInputItem)) {
+            Recipe<?> recipe = hasInputItem ? (Recipe<?>)blockEntity.matchGetter.getFirstMatch(blockEntity, world).orElse(null) : null;
+            int maxStackSize = blockEntity.getMaxCountPerStack();
+
+            if (!isBurningBeforeTick && AbstractFurnaceBlockEntity.canAcceptRecipeOutput(world.getRegistryManager(), recipe, blockEntity.inventory, maxStackSize)) {
+                blockEntity.fuelTime = blockEntity.burnTime = blockEntity.getFuelTime(fuelStack);
+
+                if (isBurningBeforeTick) {
+                    shouldUpdateBlockState = true;
+
+                    if (hasFuel) {
+                        Item fuelItem = fuelStack.getItem();
+                        fuelStack.decrement(1);
+
+                        if (fuelStack.isEmpty()) {
+                            Item remainderItem = fuelItem.getRecipeRemainder();
+                            blockEntity.inventory.set(1, remainderItem == null ? ItemStack.EMPTY : new ItemStack(remainderItem));
+                        }
+                    }
+                }
+            }
+
+            if (isBurningBeforeTick && AbstractFurnaceBlockEntity.canAcceptRecipeOutput(world.getRegistryManager(), recipe, blockEntity.inventory, maxStackSize)) {
+                ++blockEntity.cookTime;
+
+                if (blockEntity.cookTime == blockEntity.cookTimeTotal) {
+                    blockEntity.cookTime = 0;
+                    blockEntity.cookTimeTotal = AbstractFurnaceBlockEntity.getCookTime(world, blockEntity);
+
+                    if (AbstractFurnaceBlockEntity.craftRecipe(world.getRegistryManager(), recipe, blockEntity.inventory, maxStackSize)) {
+                        blockEntity.setLastRecipe(recipe);
+                    }
+
+                    shouldUpdateBlockState = true;
+                }
+            } else {
+                blockEntity.cookTime = 0;
+            }
+        } else if (!isBurningBeforeTick && blockEntity.cookTime > 0) {
+            blockEntity.cookTime = MathHelper.clamp(blockEntity.cookTime - 2, 0, blockEntity.cookTimeTotal);
+        }
+
+        boolean isBurningAfterTick = blockEntity.isBurning();
+
+        if (isBurningBeforeTick != isBurningAfterTick) {
+            shouldUpdateBlockState = true;
+            state = (BlockState)state.with(AbstractFurnaceBlock.LIT, isBurningAfterTick);
+            world.setBlockState(pos, state, Block.NOTIFY_ALL);
+        }
+
+        if (shouldUpdateBlockState) {
+            AbstractFurnaceBlockEntity.markDirty(world, pos, state);
+        }
+    }
+    */
 }

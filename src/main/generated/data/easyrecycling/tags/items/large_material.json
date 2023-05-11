@@ -1,0 +1,18 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:amethyst_block",
+    "minecraft:crying_obsidian",
+    "minecraft:diamond_block",
+    "minecraft:emerald_block",
+    "minecraft:end_stone",
+    "minecraft:iron_block",
+    "minecraft:netherite_block",
+    "minecraft:obsidian",
+    "minecraft:quartz_block",
+    {
+      "id": "#c:concrete_powder",
+      "required": false
+    }
+  ]
+}

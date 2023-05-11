@@ -1,1 +1,9 @@
-// 1.19.4	2023-05-04T05:24:16.328614	EasyRecycling/Tags for minecraft:item
+// 1.19.4	2023-05-06T21:46:00.635595	EasyRecycling/Tags for minecraft:item
+03e246218b845202e820bd4facc9d8e58048fd96 data/easyrecycling/tags/items/large_material.json
+9082b7c5f045881f8a76134c4e930a9bc490bc72 data/easyrecycling/tags/items/hardness_1_material.json
+41fb41779a8ebd5bcd24e2d696a1f50ff5f9c11d data/easyrecycling/tags/items/hardness_3_material.json
+191d287b72ea00f7e4aab50e1229dbbc5f1e7cac data/easyrecycling/tags/items/hardness_2_material.json
+010cf53d19ece15bc67961854e9c9a7f8ba620c1 data/c/tags/items/concrete_powder.json
+d6b4d0da6c2302a7e42d038511868daa49d702a8 data/easyrecycling/tags/items/small_material.json
+c8e7a09445f8e094551fcffa2121038be6f4d347 data/easyrecycling/tags/items/medium_material.json
+96e8f0391654067e9a9c885b7e2799b9a71aded8 data/easyrecycling/tags/items/hardness_4_material.json

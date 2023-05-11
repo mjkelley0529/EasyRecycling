@@ -8,6 +8,8 @@ import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.screen.CraftingScreenHandler;
 import net.minecraft.screen.NamedScreenHandlerFactory;
@@ -15,6 +17,7 @@ import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.stat.Stats;
 import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
@@ -34,10 +37,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.Stream;
 
-public class RecyclingTableBlock extends BlockWithEntity implements BlockEntityProvider {
+public class RecyclingTableBlock extends BlockWithEntity implements BlockEntityProvider, Waterloggable {
     public static final String TITLE_KEY = EasyRecycling.getKey("container", "recycling_table");
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
     public static final EnumProperty<WallMountLocation> FACE = Properties.WALL_MOUNT_LOCATION;
+    public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
     private static final VoxelShape X_FLOOR_SHAPE, Z_FLOOR_SHAPE,
             NORTH_WALL_SHAPE, SOUTH_WALL_SHAPE,
             EAST_WALL_SHAPE, WEST_WALL_SHAPE,
@@ -120,12 +124,13 @@ public class RecyclingTableBlock extends BlockWithEntity implements BlockEntityP
         super(settings);
         this.setDefaultState(this.stateManager.getDefaultState()
                 .with(FACING, Direction.NORTH)
-                .with(FACE, WallMountLocation.WALL));
+                .with(FACE, WallMountLocation.WALL)
+                .with(WATERLOGGED, false));
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACING, FACE);
+        builder.add(FACING, FACE, WATERLOGGED);
     }
     @Override
     public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
@@ -179,6 +184,10 @@ public class RecyclingTableBlock extends BlockWithEntity implements BlockEntityP
         return X_FLOOR_SHAPE;
     }
     @Override
+    public FluidState getFluidState(BlockState state) {
+        return state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : super.getFluidState(state);
+    }
+    @Override
     @Nullable
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         for (Direction direction : ctx.getPlacementDirections()) {
@@ -188,7 +197,7 @@ public class RecyclingTableBlock extends BlockWithEntity implements BlockEntityP
                             WallMountLocation.FLOOR).with(FACING, ctx.getHorizontalPlayerFacing()) :
                     this.getDefaultState().with(FACE, WallMountLocation.WALL).with(FACING, direction.getOpposite());
             if (!blockState.canPlaceAt(ctx.getWorld(), ctx.getBlockPos())) continue;
-            return blockState;
+            return blockState.with(WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER);
         }
         return null;
     }
@@ -197,6 +206,9 @@ public class RecyclingTableBlock extends BlockWithEntity implements BlockEntityP
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
         if (getDirection(state).getOpposite() == direction && !state.canPlaceAt(world, pos)) {
             return Blocks.AIR.getDefaultState();
+        }
+        if (state.get(WATERLOGGED)) {
+            world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
         }
         return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
     }

@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:basalt",
+    "minecraft:blackstone",
+    "minecraft:deepslate",
+    "minecraft:iron_block",
+    "minecraft:iron_ingot",
+    "minecraft:quartz",
+    "minecraft:quartz_block",
+    "minecraft:redstone",
+    "minecraft:scute",
+    "minecraft:turtle_helmet"
+  ]
+}

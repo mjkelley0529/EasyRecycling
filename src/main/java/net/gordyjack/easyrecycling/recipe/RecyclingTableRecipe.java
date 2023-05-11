@@ -2,6 +2,7 @@ package net.gordyjack.easyrecycling.recipe;
 
 import com.google.gson.JsonObject;
 import net.gordyjack.easyrecycling.EasyRecycling;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -13,7 +14,7 @@ import net.minecraft.util.JsonHelper;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 
-public class RecyclingTableRecipe implements Recipe<SimpleInventory> {
+public class RecyclingTableRecipe implements Recipe<Inventory> {
     //Fields
     private static final String JSONID = "recycling_table";
     private final Identifier ID;
@@ -32,15 +33,14 @@ public class RecyclingTableRecipe implements Recipe<SimpleInventory> {
     //Methods
     //Inherited Methods
     @Override
-    public boolean matches(SimpleInventory inventory, World world) {
+    public boolean matches(Inventory inventory, World world) {
         if (world.isClient()) {
             return false;
         }
         return INPUT.getItem().equals(inventory.getStack(0).getItem());
     }
-
     @Override
-    public ItemStack craft(SimpleInventory inventory, DynamicRegistryManager registryManager) {
+    public ItemStack craft(Inventory inventory, DynamicRegistryManager registryManager) {
         return null;
     }
     @Override

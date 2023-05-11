@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:amethyst_cluster",
+    "minecraft:large_amethyst_bud",
+    "minecraft:ancient_debris",
+    "minecraft:basalt",
+    "minecraft:blackstone",
+    "minecraft:deepslate",
+    "minecraft:gravel",
+    "minecraft:netherite_ingot",
+    "minecraft:sand",
+    "minecraft:turtle_helmet"
+  ]
+}

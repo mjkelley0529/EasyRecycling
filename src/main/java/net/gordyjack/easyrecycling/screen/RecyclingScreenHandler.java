@@ -49,17 +49,25 @@ public class RecyclingScreenHandler extends ScreenHandler {
         checkSize(inventory, RecyclingTableEntity.INVENTORY_SIZE);
         this.INVENTORY = inventory;
         inventory.onOpen(playerInventory.player);
+
+        checkDataCount(delegate, RecyclingTableEntity.DELEGATE_SIZE);
         this.DELEGATE = delegate;
 
         generateLegalItems();
 
-        this.addSlot(new Slot(inventory, 0, 49, 34) {
+        this.addSlot(new Slot(inventory, 0, 49, 19) {
             @Override
             public boolean canInsert(ItemStack stack) {
                 return LEGAL_ITEMS.contains(stack.getItem());
             }
         });
-        this.addSlot(new Slot(inventory, 1, 129, 34) {
+        this.addSlot(new Slot(inventory, 1, 49, 50) {
+            @Override
+            public boolean canInsert(ItemStack stack) {
+                return true;
+            }
+        });
+        this.addSlot(new Slot(inventory, 2, 109, 34) {
             @Override
             public boolean canInsert(ItemStack stack) {
                 return false;
