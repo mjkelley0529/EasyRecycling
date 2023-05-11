@@ -2,7 +2,6 @@ package net.gordyjack.easyrecycling.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.gordyjack.easyrecycling.EasyRecycling;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.GrindstoneScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.render.GameRenderer;
@@ -31,37 +30,40 @@ public class RecyclingScreen extends HandledScreen<RecyclingScreenHandler> {
     }
     //Inherited Methods
     @Override
-    protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
+    protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.setShaderTexture(0, TEXTURE);
 
-        context.drawTexture(TEXTURE, xD2(), yD2(), 0, 0, backgroundWidth, backgroundHeight);
+        drawTexture(matrices, xD2(), yD2(), 0, 0, backgroundWidth, backgroundHeight);
         if (this.handler.getSlot(0).hasStack() && !this.handler.getSlot(1).hasStack()) {
-            context.drawTexture(TEXTURE, xD2() + 92, yD2() + 31, this.backgroundWidth, 0, 28, 21);
+            drawTexture(matrices, xD2() + 92, yD2() + 31, this.backgroundWidth, 0, 28, 21);
         }
 
-        renderFuel(context);
-        renderProgressArrow(context);
+        renderFuel(matrices, xD2(), yD2());
+        renderProgressArrow(matrices, xD2(), yD2());
     }
-
-    /*@Override
+    @Override
+    protected void init() {
+        super.init();
+        titleX = (backgroundWidth-textRenderer.getWidth(title))/2;
+    }
+    @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         renderBackground(matrices);
         super.render(matrices, mouseX, mouseY, delta);
         drawMouseoverTooltip(matrices, mouseX, mouseY);
     }
-     */
 
     //TODO: Change these methods and texture file to appropriately display a progress arrow and grinding material indicator
-    private void renderFuel(DrawContext context) {
+    private void renderFuel(MatrixStack matrices, int x, int y) {
         if (handler.isCrafting()) {
-            context.drawTexture(TEXTURE, xD2() + 105, yD2() + 33, 176, 0, 8, handler.getScaledFuel());
+            drawTexture(matrices, x + 105, y + 33, 176, 0, 8, handler.getScaledFuel());
         }
     }
-    private void renderProgressArrow(DrawContext context) {
+    private void renderProgressArrow(MatrixStack matrices, int x, int y) {
         if (handler.isCrafting()) {
-            context.drawTexture(TEXTURE, xD2()+ 105, yD2() + 33, 176, 0, 8, handler.getScaledProgress());
+            drawTexture(matrices, x + 105, y + 33, 176, 0, 8, handler.getScaledProgress());
         }
     }
 }
