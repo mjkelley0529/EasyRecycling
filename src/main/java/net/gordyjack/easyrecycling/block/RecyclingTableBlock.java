@@ -189,19 +189,28 @@ public class RecyclingTableBlock extends BlockWithEntity implements BlockEntityP
     }
     @Override
     @Nullable
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        for (Direction direction : ctx.getPlacementDirections()) {
-            BlockState blockState = direction.getAxis() == Direction.Axis.Y ?
-                    this.getDefaultState().with(FACE, direction == Direction.UP ?
-                            WallMountLocation.CEILING :
-                            WallMountLocation.FLOOR).with(FACING, ctx.getHorizontalPlayerFacing()) :
-                    this.getDefaultState().with(FACE, WallMountLocation.WALL).with(FACING, direction.getOpposite());
-            if (!blockState.canPlaceAt(ctx.getWorld(), ctx.getBlockPos())) continue;
-            return blockState.with(WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER);
+    public BlockState getPlacementState(ItemPlacementContext context) {
+        for (Direction placementDirection : context.getPlacementDirections()) {
+            BlockState defaultState = this.getDefaultState();
+            BlockState blockState;
+            
+            WallMountLocation mountLocation = placementDirection == Direction.UP ?
+                    WallMountLocation.CEILING : WallMountLocation.FLOOR;
+            
+            blockState = switch (placementDirection.getAxis()) {
+                case Y -> defaultState.with(FACE, mountLocation).with(FACING, context.getHorizontalPlayerFacing());
+                case X, Z -> defaultState.with(FACE, WallMountLocation.WALL).with(FACING, placementDirection.getOpposite());
+            };
+            
+            if (!blockState.canPlaceAt(context.getWorld(), context.getBlockPos())) {
+                continue;
+            }
+            
+            return blockState.with(WATERLOGGED, context.getWorld().getFluidState(context.getBlockPos()).getFluid() == Fluids.WATER);
         }
         return null;
     }
-
+    
     @Override
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
         if (getDirection(state).getOpposite() == direction && !state.canPlaceAt(world, pos)) {
